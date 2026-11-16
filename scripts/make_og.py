@@ -8,6 +8,9 @@ Writes (all committed to the repo, so the site never needs this script to run):
     og-image.png                  copy of og-no.png (the hourly job swaps it)
     favicon.svg                   browser-tab icon
     apple-touch-icon.png          180x180 home-screen icon
+    assets/press/og-yes.png, og-no.png   copies for the press kit
+    assets/press/logo-1080.png    1080x1080 square logo (iguana plus wordmark)
+    assets/press/iguana.png       the cartoon iguana on a transparent background
 
 The iguana artwork below is copied from the cartoon scene in index.html. If you
 redraw the iguana there, copy the new paths here too and re-run this script.
@@ -120,6 +123,29 @@ def favicon_svg():
 </svg>'''
 
 
+def logo_svg():
+    """Square logo: the iguana on its branch over the wordmark."""
+    c = WARM
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+ <rect width="1080" height="1080" fill="#fff6e0"/>
+ <circle cx="540" cy="400" r="330" fill="#8fd3ef"/>
+ <circle cx="760" cy="200" r="70" fill="#ffd54a"/>
+ <path d="M170,470 C380,452 700,450 910,458 L910,476 C700,472 380,476 176,494 Z" fill="#7a5532"/>
+ <g transform="translate(600,430) scale(1.7)">{iguana(c)}</g>
+ <rect x="140" y="790" width="800" height="12" rx="6" fill="#ff7a2f"/>
+ <text x="540" y="900" text-anchor="middle" font-family="Archivo Black" font-size="92" fill="#13261d">Are iguanas</text>
+ <text x="540" y="1000" text-anchor="middle" font-family="Archivo Black" font-size="92" fill="#2f7d32">falling?</text>
+</svg>'''
+
+
+def iguana_transparent_svg():
+    c = WARM
+    # bounding box of the iguana is about x -238..118, y -36..34; add a margin
+    return f'''<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="340" viewBox="-250 -48 380 96">
+ {iguana(c)}
+</svg>'''
+
+
 def render(svg, out, **kw):
     import resvg_py
     png = resvg_py.svg_to_bytes(svg_string=svg, font_files=FONTS, skip_system_fonts=True, **kw)
@@ -135,6 +161,12 @@ def main():
     fav = favicon_svg()
     (ROOT / "favicon.svg").write_text(fav)
     render(fav, ROOT / "apple-touch-icon.png", width=180, height=180)
+    press = ROOT / "assets" / "press"
+    press.mkdir(parents=True, exist_ok=True)
+    for name in ("og-yes.png", "og-no.png"):
+        shutil.copyfile(ROOT / name, press / name)
+    render(logo_svg(), press / "logo-1080.png")
+    render(iguana_transparent_svg(), press / "iguana.png")
 
 
 if __name__ == "__main__":

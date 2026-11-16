@@ -9,6 +9,9 @@ From the Stroud Lab at Georgia Tech.
 | File | What it does |
 |---|---|
 | `index.html` | Home page: YES/NO answer, "Share tonight's answer" button, cartoon iguana, Florida map, thermometer slider, iNaturalist report band and counter |
+| `press.html` | Press kit for reporters: pitch, story angles, key facts with citations, bio, contact, downloadable graphics. Linked as "Press" in every footer |
+| `assets/press/` | Press-kit downloads: link cards, square logo, transparent iguana, YES/NO screenshots (and your headshot, once uploaded) |
+| `scripts/press_screenshots.js` | Optional dev tool that re-takes the two press screenshots with Playwright |
 | `who.html` | "Who are we?" page. Lab roster is near the bottom of the file (`PEOPLE` and `ALUMNI`) |
 | `assets/i18n.js` | Every piece of English and Spanish text on the site. Edit wording here |
 | `assets/site.css` | Shared look (colours, fonts, nav, buttons) |
@@ -29,6 +32,14 @@ From the Stroud Lab at Georgia Tech.
 - Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 55` slows the iguana down.
 - iNaturalist project: `INAT_PROJECT` in `scripts/update_forecast.py`. The counter counts observations since 1 November each winter.
 - Lab photos: upload images to `assets/people/` and add `photo:"assets/people/name.jpg"` to that person in `who.html`.
+
+## Press kit
+
+- Wording: `assets/i18n.js`, keys starting `press_`.
+- **Headshot:** upload a square photo as `assets/press/stroud-headshot.jpg`, then in `press.html` change `const HAS_HEADSHOT=false;` to `true`.
+- **Contact:** fill in the email and phone in `press.html` (search for `TODO(James)`).
+- Downloads list: the `FILES` array near the bottom of `press.html`.
+- `make_og.py` also writes the logo, the transparent iguana and copies of the link cards into `assets/press/`.
 
 ## Share button
 
