@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Who Are We? | Are Iguanas Falling?</title>
+<meta name="description" content="The Stroud Lab at Georgia Tech: who we are and what we study.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+/* Same sign-painter voice as the home page; the people are the picture here. */
+.hero{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,4vw,56px);align-items:center}
+.hero h1{font-size:clamp(48px,8vw,104px);color:var(--leaf);margin-bottom:18px}
+.hero .lede{font-size:clamp(19px,2vw,23px);line-height:1.45;margin:0 0 16px;max-width:52ch}
+.hero p{max-width:62ch;margin:0 0 14px}
+.hero svg{display:block;width:100%;height:auto}
+.themes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.theme{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px}
+.theme p{margin:0}
+.theme .ico{width:48px;height:48px;margin-bottom:14px}
+.people{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:18px}
+.person{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:20px;display:grid;grid-template-columns:72px minmax(0,1fr);gap:16px;align-items:start}
+.av{width:72px;height:72px;border-radius:50%;display:grid;place-items:center;font-family:"Archivo Black",sans-serif;font-size:24px;color:#fff;background:var(--leaf);overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+.person h3{margin:2px 0 2px;font-size:19px}
+.person .role{font-weight:600;color:var(--soft);font-size:15px;margin:0 0 8px}
+.person .bio{margin:0;font-size:15px;line-height:1.5}
+.ug{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;margin-top:18px}
+.ug div{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 16px}
+.ug b{display:block}.ug span{font-size:14px;color:var(--soft)}
+.sub-h{font-family:"Archivo Black",sans-serif;font-size:20px;margin:34px 0 0}
+.alumni{margin:10px 0 0;color:var(--soft)}
+.links{display:flex;flex-wrap:wrap;gap:12px}
+@media(max-width:820px){.hero,.themes{grid-template-columns:minmax(0,1fr)}.hero svg{max-width:460px}}
+</style>
+</head>
+<body>
+<nav class="nav" aria-label="Site">
+  <a class="home" href="index.html" data-i18n="nav_home">Are iguanas falling?</a>
+  <div class="links">
+    <a href="who.html" aria-current="page" data-i18n="nav_who">Who are we?</a>
+    <a href="https://www.inaturalist.org/projects/are-iguanas-falling" data-i18n="nav_report">Report a fall</a>
+    <button class="lang" type="button" data-lang-toggle data-i18n="lang_btn">Español</button>
+  </div>
+</nav>
+
+<header class="band"><div class="wrap hero">
+  <div>
+    <h1 data-i18n="who_title">Who are we?</h1>
+    <p class="lede" data-i18n="who_lede"></p>
+    <p data-i18n="who_p1"></p>
+    <p data-i18n="who_p2"></p>
+  </div>
+  <svg viewBox="0 0 460 300" aria-hidden="true">
+    <rect width="460" height="300" rx="24" fill="#8fd3ef"/>
+    <circle cx="380" cy="70" r="40" fill="#ffd54a"/>
+    <path d="M0,214 C120,198 300,194 460,200 L460,214 C300,210 120,214 0,232 Z" fill="#7a5532"/>
+    <g transform="translate(250,180) scale(1.25)">
+      <path d="M-50,-12 C-110,-12 -170,-4 -235,22 C-240,26 -236,30 -230,28 C-170,10 -110,12 -50,14 Z" fill="#6fb53a"/>
+      <g stroke="#3d7a22" stroke-width="5" stroke-linecap="round"><path d="M-82,-11 L-84,13"/><path d="M-112,-8 L-114,12"/><path d="M-142,-4 L-144,12"/></g>
+      <path d="M-30,18 C-36,26 -44,30 -54,30 M40,16 C44,26 50,30 60,30" stroke="#3d7a22" stroke-width="7" stroke-linecap="round" fill="none"/>
+      <ellipse cx="0" cy="0" rx="66" ry="21" fill="#6fb53a"/>
+      <ellipse cx="2" cy="10" rx="56" ry="9" fill="#c4df82"/>
+      <path id="crest" fill="#3d7a22"/>
+      <path d="M64,10 C70,32 88,36 98,12 Z" fill="#c4df82" stroke="#3d7a22" stroke-width="1.5"/>
+      <path d="M50,-15 C76,-26 102,-22 114,-9 C121,-2 118,7 108,9 C90,12 70,14 50,14 Z" fill="#6fb53a"/>
+      <circle cx="72" cy="5" r="7" fill="#c4df82" stroke="#3d7a22" stroke-width="1.5"/>
+      <circle cx="93" cy="-10" r="4.5" fill="#2b1a0e"/><circle cx="94.5" cy="-11.5" r="1.4" fill="#fff"/>
+    </g>
+  </svg>
+</div></header>
+
+<section class="band" style="padding-top:0"><div class="wrap">
+  <h2 data-i18n="themes_h">What we study</h2>
+  <div class="themes">
+    <div class="theme">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M6 38 C14 10 34 10 42 38"/><path d="M24 14 V38"/><circle cx="24" cy="14" r="3"/></svg>
+      <h3 data-i18n="th1_h"></h3><p data-i18n="th1_p"></p>
+    </div>
+    <div class="theme">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M20 30 V8 a4 4 0 0 1 8 0 V30"/><circle cx="24" cy="36" r="7"/><path d="M34 12 h6 M34 20 h6"/></svg>
+      <h3 data-i18n="th2_h"></h3><p data-i18n="th2_p"></p>
+    </div>
+    <div class="theme">
+      <svg class="ico" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><rect x="12" y="16" width="24" height="16" rx="3"/><path d="M18 16 V10 M30 16 V10 M8 24 h4 M36 24 h4"/><circle cx="24" cy="24" r="3"/></svg>
+      <h3 data-i18n="th3_h"></h3><p data-i18n="th3_p"></p>
+    </div>
+  </div>
+</div></section>
+
+<section class="band" style="padding-top:0"><div class="wrap">
+  <h2 data-i18n="people_h">The lab</h2>
+  <div class="people" id="people"></div>
+  <div class="ug" id="ug"></div>
+  <p class="sub-h" data-i18n="alumni_h">Lab alumni</p>
+  <p class="alumni" id="alumni"></p>
+</div></section>
+
+<section class="band" style="padding-top:0"><div class="wrap">
+  <h2 data-i18n="links_h">More from the lab</h2>
+  <div class="links">
+    <a class="btn solid" href="https://www.thestroudlab.com" data-i18n="link_site">Lab website</a>
+    <a class="btn" href="https://www.thestroudlab.com/publications/" data-i18n="link_pubs">Publications</a>
+    <a class="btn" href="https://www.thestroudlab.com/outreach/" data-i18n="link_outreach">Outreach</a>
+  </div>
+</div></section>
+
+<footer class="band"><div class="wrap">
+  <p>Stroud Lab, School of Biological Sciences, Georgia Institute of Technology</p>
+</div></footer>
+
+<script src="assets/i18n.js"></script>
+<script>
+{
+/* ===== EDIT THE LAB ROSTER HERE =====
+   role: one of r_pi, r_manager, r_postdoc, r_phd, r_ms, r_incoming, r_ug
+   photo (optional): a file you upload, e.g. "assets/people/stroud.jpg"
+   bio: English (en) and Spanish (es). Leave out for undergraduates. */
+const PEOPLE=[
+ {name:"James T. Stroud, Ph.D.",role:"r_pi",
+  bio:{en:"Evolutionary ecologist and Assistant Professor in the School of Biological Sciences. Originally from London; PhD at Florida International University (2018), then a postdoc with Jonathan Losos at Washington University in St. Louis. Founded the Lizard Island study in 2015.",
+       es:"Ecólogo evolutivo y profesor asistente en la Escuela de Ciencias Biológicas. Originario de Londres; doctorado en Florida International University (2018) y posdoctorado con Jonathan Losos en Washington University in St. Louis. Fundó el estudio de Lizard Island en 2015."}},
+ {name:"Jon Suh",role:"r_manager",
+  bio:{en:"Keeps the lab running: field logistics, permits, equipment, and the long-term Lizard Island database.",
+       es:"Mantiene el laboratorio funcionando: logística de campo, permisos, equipo y la base de datos de largo plazo de Lizard Island."}},
+ {name:"Guillermo Garcia-Costoya, Ph.D.",role:"r_postdoc",
+  bio:{en:"Brings mechanistic biophysical models to the evolution of thermal physiology in lizards, and to Lizard Island.",
+       es:"Aplica modelos biofísicos mecanísticos a la evolución de la fisiología térmica en lagartos y a Lizard Island."}},
+ {name:"Taylor Cooper",role:"r_phd",extra:"Bioinformatics · NSF Graduate Research Fellow",
+  bio:{en:"How lizards respond to extreme thermal stress at the level of gene expression, and genomic signatures of selection on Lizard Island.",
+       es:"Cómo responden los lagartos al estrés térmico extremo a nivel de expresión génica, y las huellas genómicas de la selección en Lizard Island."}},
+ {name:"Emma Glenn",role:"r_phd",extra:"Biology · Simons Foundation Graduate Fellow",
+  bio:{en:"The physiological mechanisms lizards use to survive extreme cold, below their critical thermal minimum (CTmin).",
+       es:"Los mecanismos fisiológicos que usan los lagartos para sobrevivir al frío extremo, por debajo de su mínimo térmico crítico (CTmin)."}},
+ {name:"Matthew Anderson",role:"r_ms"},
+ {name:"Sam Clay",role:"r_incoming",
+  bio:{en:"Joining the lab in Fall 2027; currently a Fulbright Scholar in Ecuador.",
+       es:"Se une al laboratorio en otoño de 2027; actualmente becario Fulbright en Ecuador."}},
+ {name:"Ashlyn Willis",role:"r_ug"},{name:"Brynne Hobart",role:"r_ug"},{name:"Haelin Lee",role:"r_ug"},
+ {name:"Elle Garman",role:"r_ug"},{name:"Loan (Rita) Tran",role:"r_ug"},{name:"Tessa Allers",role:"r_ug"},
+ {name:"Katie Stone",role:"r_ug"},{name:"Camdyn Gates",role:"r_ug"}
+];
+const ALUMNI=["Larkin Wynn","Katie Griffin","Miles Appleton","Eli Vazquez"];
+/* ===== END OF ROSTER ===== */
+
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const initials=n=>n.replace(/,.*$/,"").replace(/\(.*?\)/g,"").split(/\s+/).filter(Boolean).map(w=>w[0]).filter(c=>/[A-Z]/.test(c)).slice(0,2).join("");
+function render(){
+  const L=window.getLang();
+  document.getElementById("people").innerHTML=PEOPLE.filter(p=>p.role!=="r_ug").map(p=>`
+   <article class="person">
+     <div class="av">${p.photo?`<img src="${esc(p.photo)}" alt="">`:esc(initials(p.name))}</div>
+     <div><h3>${esc(p.name)}</h3>
+     <p class="role">${esc(window.t(p.role))}${p.extra?`<br>${esc(p.extra)}`:""}</p>
+     ${p.bio?`<p class="bio">${esc(p.bio[L]||p.bio.en)}</p>`:""}</div>
+   </article>`).join("");
+  document.getElementById("ug").innerHTML=PEOPLE.filter(p=>p.role==="r_ug").map(p=>`<div><b>${esc(p.name)}</b><span>${esc(window.t(p.role))}</span></div>`).join("");
+  document.getElementById("alumni").textContent=ALUMNI.join(" · ");
+}
+let d="";for(let x=-48;x<=60;x+=9){const y=-21*Math.sqrt(Math.max(0,1-(x/66)**2));const h=6+10*(1-Math.abs(x-20)/80);d+=`M${x-4},${y+2}L${x},${y-h}L${x+4},${y+2}Z`;}
+document.getElementById("crest").setAttribute("d",d);
+window.onLangChange(render);
+window.applyI18n();
+}
+</script>
+</body>
+</html>
