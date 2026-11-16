@@ -42,6 +42,23 @@ body.cold .big{color:var(--ice)}
 .scene{display:block;width:100%;height:auto;aspect-ratio:600/480}
 .mapbox{padding:14px 14px 6px}
 .mapbox svg{display:block;width:100%;height:auto}
+.mapwrap{position:relative}
+.pin{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;padding:0;border:0;border-radius:50%;background:transparent;display:grid;place-items:center;min-height:0;cursor:pointer}
+.pin::before{content:"";width:11px;height:11px;background:var(--ink);border:2px solid var(--card);transform:rotate(45deg);box-shadow:0 0 0 1px var(--ink)}
+.pin[aria-expanded=true]::before{box-shadow:0 0 0 1px var(--ink),0 0 0 5px var(--hot)}
+@media(max-width:600px){.pin::before{width:8px;height:8px;border-width:1.5px}}
+.pop{position:absolute;z-index:2;width:min(240px,80%);background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;padding:10px 12px;box-shadow:0 6px 20px rgba(0,0,0,.18);font-size:15px}
+.pop[hidden]{display:none}
+.pop b{display:block}
+.pop .x{position:absolute;top:2px;right:2px;min-height:40px;width:40px;padding:0;justify-content:center;border:0;font-size:22px;line-height:1}
+.pop a{display:inline-flex;align-items:center;min-height:44px;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:4px 18px;margin:0;padding:0 16px 6px;font-size:14px;font-weight:600;color:var(--soft);list-style:none}
+.legend li{display:flex;align-items:center;gap:7px}
+.legend li[hidden]{display:none}
+.legend .dot{width:12px;height:12px;border-radius:50%;background:#ff7a2f;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+body.cold .legend .dot{background:#3d8fd1}
+.legend .dia{width:10px;height:10px;background:var(--ink);transform:rotate(45deg);margin:0 1px}
+.hidnote{font-size:13px;color:var(--soft);padding:0 16px 14px;margin:0}
 .cap{font-size:14px;color:var(--soft);padding:0 16px 14px;margin:0}
 .land{fill:light-dark(#f3e6c4,#2a3a31);stroke:light-dark(#c9b78a,#4b6455);stroke-width:1.5}
 .city text{font:600 13px Archivo,sans-serif;fill:var(--ink)}
@@ -180,8 +197,21 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
       </svg>
     </div>
     <div class="panel">
-      <div class="mapbox"><svg id="map" viewBox="-10 0 545 400" role="img" data-i18n-aria="map_aria" aria-label="Map of Florida with forecast overnight lows"></svg></div>
+      <div class="mapbox"><div class="mapwrap" id="mapwrap">
+        <svg id="map" viewBox="-10 0 545 400" role="img" data-i18n-aria="map_aria" aria-label="Map of Florida with forecast overnight lows"></svg>
+        <div id="pins"></div>
+        <div class="pop" id="pop" hidden role="dialog" aria-labelledby="popH">
+          <button type="button" class="x" id="popX" data-i18n-aria="fall_close" aria-label="Close">×</button>
+          <b id="popH" data-i18n="fall_pop_h">Reported fall</b><span id="popD"></span><br>
+          <a id="popA" href="#" data-i18n="fall_view">See it on iNaturalist</a>
+        </div>
+      </div></div>
+      <ul class="legend" id="legend">
+        <li><span class="dot" aria-hidden="true"></span><span data-i18n="legend_low">Forecast low</span></li>
+        <li id="legFall" hidden><span class="dia" aria-hidden="true"></span><span data-i18n="legend_fall">Reported fall</span></li>
+      </ul>
       <p class="cap" id="mapcap"></p>
+      <p class="hidnote" id="hidnote" hidden></p>
     </div>
   </div>
 </div></main>
@@ -268,7 +298,7 @@ let d="";for(let x=-48;x<=60;x+=9){const y=-21*Math.sqrt(Math.max(0,1-(x/66)**2)
 $("crest").setAttribute("d",d);
 $("flakes").innerHTML=Array.from({length:26},(_,i)=>`<circle cx="${(i*83)%590+5}" cy="${(i*47)%380+10}" r="${2+i%3}"/>`).join("");
 
-let live=null,liveNote="map_plain",liveDate="",lastLevel=null,sceneT=70,falls=null;
+let live=null,liveNote="map_plain",liveDate="",lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
 function setScene(t,replay){
   sceneT=t;
   const L=level(t);document.body.classList.remove("cold","chilly","warm");document.body.classList.add(L);
@@ -294,15 +324,53 @@ function words(){
   $("mapcap").textContent=window.t(liveNote,{d:liveDate});
   $("st").textContent=window.t("st_"+level(sceneT));
   if(falls!==null){$("count").hidden=false;$("countN").textContent=falls;$("countL").textContent=window.t(falls===1?"count_one":"count_many");}
+  drawFalls();
 }
 function show(rows,note){
   live=rows;if(note)liveNote=note;drawMap(rows);words();
   $("share").hidden=liveNote==="map_sample";
   const c=rows.reduce((a,b)=>b.min<a.min?b:a);setScene(Math.round(c.min));
 }
+/* ===== Reported falls (falls.json, written by the hourly job) =====
+   The counter and the markers come from the same file, so they always agree.
+   Obscured and private iNaturalist records are never in the file; they only add to "hidden". */
+const fmtDay=d=>{try{return new Date(d+"T12:00:00").toLocaleDateString(window.getLang()==="es"?"es-US":"en-US",{month:"long",day:"numeric",year:"numeric"});}catch(e){return d;}};
+let openPin=null;
+function closePop(focusPin){$("pop").hidden=true;if(openPin){openPin.setAttribute("aria-expanded","false");if(focusPin)openPin.focus();}openPin=null;}
+function drawFalls(){
+  const pts=fallPts||[];
+  $("legFall").hidden=!pts.length;
+  $("hidnote").hidden=!fallHidden;
+  if(fallHidden)$("hidnote").textContent=window.t(fallHidden===1?"falls_hidden_one":"falls_hidden_many",{h:fallHidden});
+  closePop(false);
+  $("pins").innerHTML=pts.map((f,i)=>{const[x,y]=P(f.lon,f.lat);
+    return `<button type="button" class="pin" data-i="${i}" aria-expanded="false" aria-controls="pop" style="left:${((x+10)/545*100).toFixed(2)}%;top:${(y/400*100).toFixed(2)}%" aria-label="${window.t("fall_pin",{d:fmtDay(f.date)})}"></button>`}).join("");
+}
+$("pins").addEventListener("click",e=>{
+  const b=e.target.closest(".pin");if(!b)return;
+  if(openPin===b){closePop(true);return;}
+  closePop(false);
+  const f=fallPts[+b.dataset.i];openPin=b;b.setAttribute("aria-expanded","true");
+  $("popD").textContent=fmtDay(f.date);$("popA").href=f.url;
+  const pop=$("pop"),W=$("mapwrap").clientWidth,left=b.offsetLeft+22,top=b.offsetTop+22;
+  pop.hidden=false;
+  pop.style.left=Math.max(0,Math.min(left-pop.offsetWidth/2,W-pop.offsetWidth))+"px";
+  pop.style.top=(top>pop.offsetHeight+30?top-pop.offsetHeight-16:top+18)+"px";
+  $("popA").focus();
+});
+$("popX").addEventListener("click",()=>closePop(true));
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("pop").hidden)closePop(true);});
+async function loadFalls(){
+  try{const r=await fetch("falls.json",{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
+    if(typeof j.count!=="number"||!Array.isArray(j.points))throw 0;
+    falls=j.count;fallHidden=Math.max(0,j.count-j.points.length);
+    fallPts=j.points.filter(p=>isFinite(p.lat)&&isFinite(p.lon)&&/^https:\/\/www\.inaturalist\.org\//.test(p.url));
+    words();drawFalls();return true;
+  }catch(e){return false;}
+}
 async function load(){
   try{const r=await fetch("status.json",{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
-    if(j.falls&&typeof j.falls.count==="number")falls=j.falls.count;
+    if(fallPts===null&&j.falls&&typeof j.falls.count==="number")falls=j.falls.count;
     liveDate=new Date(j.updated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
     show(j.cities.map((c,i)=>({...CITIES[i],...c})),"map_live");return}catch(e){}
   try{const q=`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c.lat)}&longitude=${CITIES.map(c=>c.lon)}&daily=temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=2`;
@@ -406,7 +474,7 @@ $("live").addEventListener("click",()=>{if(live)show(live);});
 window.onLangChange(words);
 window.applyI18n();
 $("why").textContent=window.t("checking");
-drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70);load();
+drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70);loadFalls().then(load);
 }
 </script>
 </body>

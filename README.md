@@ -18,7 +18,8 @@ From the Stroud Lab at Georgia Tech.
 | `assets/analytics.js` | GoatCounter visit counter and event tracking. Your GoatCounter code goes at the top |
 | `assets/site.css` | Shared look (colours, fonts, nav, buttons) |
 | `animations/` | Three reserve animations (field guide, thermal camera, night silhouette). Not linked from the site; visit `/animations/` to see them |
-| `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and the iNaturalist fall count, writes `status.json` |
+| `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and this winter's iNaturalist reports, writes `status.json` and `falls.json`, swaps the preview image, posts to Bluesky on a NO→YES flip |
+| `falls.json` | This winter's fallen-iguana reports for the map: total count, number hidden for privacy, and public points (2-decimal coordinates, date, observation link) |
 | `.github/workflows/update.yml` | Runs that script every hour |
 | `inaturalist-description.md` | Text to paste into the iNaturalist project. Not used by the site |
 | `og-yes.png`, `og-no.png` | 1200×630 link-preview cards (what Bluesky, X, iMessage etc. show) |
@@ -27,7 +28,7 @@ From the Stroud Lab at Georgia Tech.
 | `scripts/make_og.py` | Redraws the preview cards and icons. Only needed if you change the artwork or wording (see below) |
 | `scripts/fonts/` | Archivo and Archivo Black (SIL Open Font License), used by `make_og.py` |
 
-`status.json` is created by the workflow; you never need to make it.
+`status.json` and `falls.json` are written by the workflow; you never need to make them.
 
 ## Settings you might change
 
@@ -49,6 +50,12 @@ From the Stroud Lab at Georgia Tech.
 - **Contact:** fill in the email and phone in `press.html` (search for `TODO(James)`).
 - Downloads list: the `FILES` array near the bottom of `press.html`.
 - `make_og.py` also writes the logo, the transparent iguana and copies of the link cards into `assets/press/`.
+
+## Map of reported falls
+
+Each hour the job fetches this winter's observations (since 1 November) from the iNaturalist project, 200 per page with a 1-second pause between pages, and writes `falls.json`. Obscured and private records (by the observer or because of the taxon) are never written with coordinates; they only add to the count. Public coordinates are rounded to 2 decimals (about 1 km).
+
+On the home page each report is a small dark diamond on the Florida map (city forecasts stay round dots). Tapping one shows its date and a link to the observation. The counter and the markers both read `falls.json`, so they always agree, and a note under the map says how many reports are hidden for privacy. With no reports, there are no markers and no "Reported fall" legend entry.
 
 ## Visitor counts (GoatCounter)
 

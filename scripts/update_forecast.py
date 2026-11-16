@@ -16,12 +16,16 @@ by hand) to print the post instead of sending it.
 import json
 import os
 import shutil
+import time
 import urllib.request
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 STATUS = ROOT / "status.json"
+FALLS = ROOT / "falls.json"
+PER_PAGE = 200   # iNaturalist's maximum page size
+MAX_PAGES = 25   # 5,000 reports; keeps the hourly job well under 2 minutes
 INAT_PROJECT = "are-iguanas-falling"  # iNaturalist project slug
 USER_AGENT = "are-iguanas-falling/1.0 (Stroud Lab, Georgia Tech; https://jameststroud.github.io/are-iguanas-falling/)"
 
@@ -89,6 +93,51 @@ def fetch_fall_count(since):
         f"?project_id={INAT_PROJECT}&d1={since}&per_page=0"
     )
     return {"count": get_json(inat)["total_results"], "since": since}
+
+
+def is_public(obs):
+    """Only plot records whose exact location is public. iNaturalist still returns a
+    (randomised) location for obscured records, so check every privacy flag."""
+    if obs.get("obscured"):
+        return False
+    if obs.get("geoprivacy") in ("obscured", "private"):
+        return False
+    if obs.get("taxon_geoprivacy") in ("obscured", "private"):
+        return False
+    return bool(obs.get("location"))
+
+
+def fetch_falls(since, max_pages=MAX_PAGES):
+    """All of this winter's project observations, paged politely (200 a page, 1 s apart).
+    Returns the data for falls.json: the total count and the public points."""
+    points, total, hidden, last_id = [], 0, 0, 0
+    for page in range(max_pages):
+        if page:
+            time.sleep(1)
+        url = (
+            "https://api.inaturalist.org/v1/observations"
+            f"?project_id={INAT_PROJECT}&d1={since}&per_page={PER_PAGE}"
+            f"&order_by=id&order=asc&id_above={last_id}"
+        )
+        results = get_json(url).get("results", [])
+        for obs in results:
+            total += 1
+            if not is_public(obs):
+                hidden += 1
+                continue
+            lat, lon = (float(x) for x in obs["location"].split(","))
+            points.append({
+                "lat": round(lat, 2),
+                "lon": round(lon, 2),
+                "date": obs.get("observed_on") or (obs.get("created_at") or "")[:10],
+                "url": obs.get("uri") or f"https://www.inaturalist.org/observations/{obs['id']}",
+            })
+        if len(results) < PER_PAGE:
+            break
+        last_id = results[-1]["id"]
+    else:
+        print(f"iNaturalist: stopped after {max_pages} pages")
+    return {"since": since, "count": total, "hidden": hidden, "points": points}
 
 
 def read_previous():
@@ -219,10 +268,21 @@ def main():
         "coldest": {"n": coldest["n"], "min": coldest["min"]},
     })
 
+    # Fallen-iguana reports. The counter on the page and the map markers both come
+    # from this one fetch, so they always agree.
+    since = season_start(now)
     try:
-        status["falls"] = fetch_fall_count(season_start(now))
+        falls = fetch_falls(since)
+        falls["updated"] = now.isoformat()
+        FALLS.write_text(json.dumps(falls, indent=1))
+        status["falls"] = {"count": falls["count"], "since": since}
+        print(f"iNaturalist: {falls['count']} reports, {len(falls['points'])} mapped, {falls['hidden']} hidden")
     except Exception as e:  # never let iNaturalist break the forecast
-        print(f"iNaturalist count skipped: {e}")
+        print(f"iNaturalist reports skipped: {e}")
+        try:
+            status["falls"] = fetch_fall_count(since)
+        except Exception as e2:
+            print(f"iNaturalist count skipped: {e2}")
 
     try:
         update_preview_image(answer)

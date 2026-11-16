@@ -35,6 +35,7 @@ window.I18N = {
 
     sci_h: "Why do iguanas fall out of trees?",
     sci_p1: "Green iguanas are native to Central and South America, and Florida winters are not what they evolved for. Like all lizards, an iguana's body temperature tracks its surroundings. On a cold enough night, their muscles stop working, they lose their grip, and down they come.",
+    /* TODO(James): "Most are not dead" needs a source, or softer wording (Spanish sci_p2 too). */
     sci_p2: "Most are not dead, just very, very cold. Leave them where they land (a warmed-up, annoyed iguana in your car is a whole new problem).",
     sci_p3: "For us, every cold snap is a natural experiment. Does selection act on cold tolerance, and how fast can tropical lizards respond to an environment they were never built for?",
     paper_blurb: "After Miami's coldest night in a decade (22 January 2020, 4.4°C), we re-measured cold tolerance in six lizard species. All six had converged on the same new, lower limit, revealing that a single extreme night can reshape physiology across an entire community.",
@@ -51,6 +52,7 @@ window.I18N = {
     th1_h: "Natural selection in the wild",
     th1_p: "We measure selection directly in the field, mostly on Anolis lizards in the southeastern US, the Caribbean, and Central and South America. Our flagship is Lizard Island, a long-term, multi-species study in Miami running since 2015.",
     th2_h: "Thermal physiology and climate",
+    /* TODO(James): confirm the "Cuba to Tennessee" wording (Spanish th2_p too). */
     th2_p: "How do tropical lizards cope with cold they were never built for? From cold-stunned iguanas to green anoles spread from Cuba to Tennessee, we ask how thermal limits evolve, and how fast.",
     th3_h: "New tools for field biology",
     th3_p: "With engineers and computer scientists at Georgia Tech we build wearable \"lizard backpack\" sensors that record behavior in the wild, and machine-learning tools for measuring lizards at scale.",
@@ -138,7 +140,7 @@ window.I18N = {
     nav_class: "Classroom",
     cl_title: "Cold-blooded? Cold-stunned!",
     cl_lede: "An interactive lesson on ectotherms and cold tolerance for middle and high school students. Why does a cold night knock iguanas out of the trees, and which lizard drops first?",
-    cl_pairs: "This lesson pairs with our <a href=\"https://www.thestroudlab.com/outreach/\">Lizards on the Loose</a> K-12 community science program.",
+    cl_pairs: "This lesson pairs with our <a href=\"https://www.thestroudlab.com/outreach/\">Lizards on the Loose</a> K‑12 community science program.",
     cl_print_ws: "Print student worksheet",
     cl_print_all: "Print with teacher guide",
     cl_name: "Name",
@@ -230,7 +232,17 @@ window.I18N = {
     tg_x4: "Join our <a href=\"https://www.thestroudlab.com/outreach/\">Lizards on the Loose</a> community science program and record the lizards around your school.",
     tg_std_h: "Standards",
     tg_std: "Connects to NGSS MS-LS2-4 (changes to physical or biological components of an ecosystem affect populations) and HS-LS1-3 (feedback mechanisms maintain homeostasis). Codes checked on nextgenscience.org; please confirm the fit for your class.",
-    tg_safety: "<b>Safety:</b> remind students never to touch or pick up a cold-stunned iguana. It will warm up and move again, and it can bite and scratch."
+    tg_safety: "<b>Safety:</b> remind students never to touch or pick up a cold-stunned iguana. It will warm up and move again, and it can bite and scratch.",
+
+    /* Map of reported falls (home page) */
+    legend_low: "Forecast low",
+    legend_fall: "Reported fall",
+    fall_pin: "Reported fall, {d}",
+    fall_pop_h: "Reported fall",
+    fall_view: "See it on iNaturalist",
+    fall_close: "Close",
+    falls_hidden_one: "1 more report is not on the map, to protect the observer's location.",
+    falls_hidden_many: "{h} more reports are not on the map, to protect observers' locations."
   },
 
   es: {
@@ -370,7 +382,7 @@ window.I18N = {
     nav_class: "Aula",
     cl_title: "¿Sangre fría? ¡Paralizados por el frío!",
     cl_lede: "Una lección interactiva sobre ectotermos y tolerancia al frío para estudiantes de secundaria y preparatoria. ¿Por qué una noche fría tumba a las iguanas de los árboles, y qué lagarto cae primero?",
-    cl_pairs: "Esta lección acompaña a nuestro programa de ciencia comunitaria K-12 <a href=\"https://www.thestroudlab.com/outreach/\">Lizards on the Loose</a>.",
+    cl_pairs: "Esta lección acompaña a nuestro programa de ciencia comunitaria K‑12 <a href=\"https://www.thestroudlab.com/outreach/\">Lizards on the Loose</a>.",
     cl_print_ws: "Imprimir hoja del estudiante",
     cl_print_all: "Imprimir con guía docente",
     cl_name: "Nombre",
@@ -462,7 +474,17 @@ window.I18N = {
     tg_x4: "Únanse a nuestro programa de ciencia comunitaria <a href=\"https://www.thestroudlab.com/outreach/\">Lizards on the Loose</a> y registren los lagartos alrededor de su escuela.",
     tg_std_h: "Estándares",
     tg_std: "Se relaciona con NGSS MS-LS2-4 (los cambios en los componentes físicos o biológicos de un ecosistema afectan a las poblaciones) y HS-LS1-3 (los mecanismos de retroalimentación mantienen la homeostasis). Códigos verificados en nextgenscience.org; confirma que se ajustan a tu clase.",
-    tg_safety: "<b>Seguridad:</b> recuerda a los estudiantes que nunca toquen ni levanten una iguana paralizada por el frío. Se va a calentar y volverá a moverse, y puede morder y arañar."
+    tg_safety: "<b>Seguridad:</b> recuerda a los estudiantes que nunca toquen ni levanten una iguana paralizada por el frío. Se va a calentar y volverá a moverse, y puede morder y arañar.",
+
+    /* Map of reported falls (home page) */
+    legend_low: "Mínima pronosticada",
+    legend_fall: "Caída reportada",
+    fall_pin: "Caída reportada, {d}",
+    fall_pop_h: "Caída reportada",
+    fall_view: "Verla en iNaturalist",
+    fall_close: "Cerrar",
+    falls_hidden_one: "1 reporte más no aparece en el mapa, para proteger la ubicación de quien lo hizo.",
+    falls_hidden_many: "{h} reportes más no aparecen en el mapa, para proteger la ubicación de quienes los hicieron."
   }
 };
 
