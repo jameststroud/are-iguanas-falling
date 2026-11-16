@@ -48,7 +48,7 @@ GoatCounter counts visits without cookies or personal data. Until you add your c
 
 **Setting it up**
 
-1. Sign up at https://www.goatcounter.com/signup (free for non-commercial use). Pick a code, e.g. `iguanas`; your dashboard becomes `https://iguanas.goatcounter.com`.
+1. Sign up at https://www.goatcounter.com/signup (a free, donation-supported service). Pick a code, e.g. `iguanas`; your dashboard becomes `https://iguanas.goatcounter.com`.
 2. In `assets/analytics.js`, change `var GOATCOUNTER_CODE = "GOATCOUNTER_CODE";` to your code, e.g. `var GOATCOUNTER_CODE = "iguanas";`. That one line covers every page.
 3. Visit the site; pageviews appear in the dashboard within a few seconds (turn off your own ad blocker to check).
 
