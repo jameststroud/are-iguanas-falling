@@ -41,6 +41,24 @@ From the Stroud Lab at Georgia Tech.
 - Downloads list: the `FILES` array near the bottom of `press.html`.
 - `make_og.py` also writes the logo, the transparent iguana and copies of the link cards into `assets/press/`.
 
+## Cold-snap posts on Bluesky
+
+When the answer flips from NO to YES, the hourly job posts to the lab's Bluesky account: an English post with the YES card attached, and a Spanish reply. It posts at most once every 12 hours and never posts an "all clear". The wording is in `post_texts()` in `scripts/update_forecast.py`.
+
+**Setting it up**
+
+1. Log in to the lab's Bluesky account → **Settings → Privacy and security → App passwords → Add App Password**. Name it `iguana-bot`, leave "Allow access to your direct messages" off, and copy the password it shows (you only see it once).
+2. In this repo: **Settings → Secrets and variables → Actions → New repository secret**, twice:
+   - `BSKY_HANDLE`: the account handle, e.g. `stroudlab.bsky.social` (no @)
+   - `BSKY_APP_PASSWORD`: the app password from step 1
+3. Test it: **Actions → Update iguana forecast → Run workflow**, tick **dry_run**, Run. Open the run's log: the "Bluesky DRY RUN" lines show exactly what would be posted. Nothing is sent.
+
+Without the secrets the job skips posting quietly. To stop posting, delete either secret (or revoke the app password in Bluesky).
+
+`status.json` fields used for this: `answer` (`"yes"`/`"no"`), `coldest` (`{n, min}`) and `last_posted` (time of the last post).
+
+**X/Twitter** is not wired up. As of November 2026 the X API is pay-per-use with no free posting tier (creating a post costs credits, more if it contains a link), so it would need a paid account.
+
 ## Share button
 
 "Share tonight's answer" draws a 1080×1350 PNG in the browser (code in `index.html`, under `Share tonight's answer`). It always uses the real forecast, never the what-if slider. On phones it opens the system share sheet; elsewhere it shows a preview with **Download image** and **Copy text**. The wording lives in `assets/i18n.js` under the `share_` keys.
