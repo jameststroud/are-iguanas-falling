@@ -10,7 +10,7 @@ From the Stroud Lab at Georgia Tech.
 |---|---|
 | `index.html` | Home page: YES/NO answer, "Share tonight's answer" button, cartoon iguana, Florida map, thermometer slider, iNaturalist report band and counter |
 | `classroom.html` | Interactive lesson (Predict, Test, Record, Explain, Connect) with a collapsible, printable teacher guide. Linked as "Classroom" in every nav |
-| `press.html` | Press kit for reporters: pitch, story angles, key facts with citations, bio, contact, downloadable graphics. Linked as "Press" in every footer |
+| `press.html` | Press & contact page for reporters: media contact and Georgia Tech press office, "In the news" coverage list, pitch, story angles, key facts with citations, bio, downloadable graphics. Linked as "Press & contact" in every footer |
 | `assets/press/` | Press-kit downloads: link cards, square logo, transparent iguana, YES/NO screenshots (and your headshot, once uploaded) |
 | `scripts/press_screenshots.js` | Optional dev tool that re-takes the two press screenshots with Playwright |
 | `who.html` | "Who are we?" page. Lab roster is near the bottom of the file (`PEOPLE` and `ALUMNI`) |
@@ -47,7 +47,8 @@ From the Stroud Lab at Georgia Tech.
 
 - Wording: `assets/i18n.js`, keys starting `press_`.
 - **Headshot:** upload a square photo as `assets/press/stroud-headshot.jpg`, then in `press.html` change `const HAS_HEADSHOT=false;` to `true`.
-- **Contact:** fill in the email and phone in `press.html` (search for `TODO(James)`).
+- **Contacts:** the media contact and press-office cards are near the top of `press.html` (`id="contact"`). Link straight to them with `press.html#contact`.
+- **In the news:** the `NEWS` list near the bottom of `press.html`, newest first. Add an item with the outlet, date, headline, link and a note type (interview, quoted, TV interview, feature, article by James).
 - Downloads list: the `FILES` array near the bottom of `press.html`.
 - `make_og.py` also writes the logo, the transparent iguana and copies of the link cards into `assets/press/`.
 

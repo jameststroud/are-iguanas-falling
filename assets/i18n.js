@@ -91,9 +91,9 @@ window.I18N = {
     share_text_no: "No iguanas falling in Florida tonight 🦎☀️ Coldest spot: {t}°F in {c}. {u}",
 
     /* Press kit (press.html) and shared footer */
-    nav_press: "Press",
+    nav_press: "Press & contact",
     foot_lab: "Stroud Lab, School of Biological Sciences, Georgia Institute of Technology",
-    press_title: "Press kit",
+    press_title: "Press & contact",
     press_lede: "Covering a Florida cold snap? Everything you need about falling iguanas, and the science behind them, is on this page.",
     press_pitch_h: "The pitch",
     press_pitch: "Every winter, a cold front pushes into South Florida and green iguanas, native to Central and South America, start dropping out of the trees. <i>Are iguanas falling?</i> answers that one question every night with a huge YES or NO, using the forecast overnight low for eight Florida cities (our rule of thumb: 44°F or below means YES). Behind the joke is real science. For the Stroud Lab at Georgia Tech, each cold snap is a natural experiment: tropical lizards meeting cold they never evolved with. After Miami's coldest night in a decade (22 January 2020, 4.4°C), we re-measured cold tolerance in six lizard species and found that all six had converged on the same new, lower limit, revealing that a single extreme night can reshape physiology across an entire community.",
@@ -242,7 +242,28 @@ window.I18N = {
     fall_view: "See it on iNaturalist",
     fall_close: "Close",
     falls_hidden_one: "1 more report is not on the map, to protect the observer's location.",
-    falls_hidden_many: "{h} more reports are not on the map, to protect observers' locations."
+    falls_hidden_many: "{h} more reports are not on the map, to protect observers' locations.",
+
+    /* Press page: media contact and In the news */
+    press_jump: "Media contact",
+    press_mc_h: "Media contact",
+    press_mc_role: "Principal Investigator, School of Biological Sciences, Georgia Institute of Technology",
+    press_mc_topics: "Available to comment on long-term field studies, natural selection in the wild, anole lizards, and evolution in real time.",
+    press_gt_h: "Georgia Tech press office",
+    press_gt_role: "Director of Communications, College of Sciences, Georgia Institute of Technology",
+    press_gt_link: "College of Sciences contact page",
+    press_news_h: "In the news",
+    press_news_p: "Outlets that have interviewed James Stroud or covered the lab's research.",
+    press_news_cold: "Falling iguanas and cold snaps",
+    press_news_evo: "Evolution in the wild",
+    news_interview: "Interview",
+    news_quoted: "Quoted",
+    news_tv: "TV interview",
+    news_cnn: "Interview with CNN, republished by ABC7",
+    news_by: "Article by James Stroud",
+    news_covers: "Covers the 2020 study",
+    news_feature: "Feature",
+    news_en: "(in English)"
   },
 
   es: {
@@ -333,9 +354,9 @@ window.I18N = {
     share_text_no: "Esta noche no caen iguanas en Florida 🦎☀️ El lugar más frío: {t}°F en {c}. {u}",
 
     /* Press kit (press.html) and shared footer */
-    nav_press: "Prensa",
+    nav_press: "Prensa y contacto",
     foot_lab: "Stroud Lab, Escuela de Ciencias Biológicas, Instituto de Tecnología de Georgia (Georgia Tech)",
-    press_title: "Kit de prensa",
+    press_title: "Prensa y contacto",
     press_lede: "¿Vas a cubrir una ola de frío en Florida? Aquí tienes todo lo que necesitas sobre las iguanas que caen y la ciencia que las explica.",
     press_pitch_h: "La propuesta",
     press_pitch: "Cada invierno, un frente frío llega al sur de Florida y las iguanas verdes, nativas de Centroamérica y Sudamérica, empiezan a caer de los árboles. <i>¿Se caen las iguanas?</i> responde esa única pregunta cada noche con un enorme SÍ o NO, según la mínima nocturna pronosticada en ocho ciudades de Florida (nuestra regla práctica: 44°F o menos significa SÍ). Detrás del chiste hay ciencia de verdad. Para el Stroud Lab de Georgia Tech, cada ola de frío es un experimento natural: lagartos tropicales frente a un frío con el que nunca evolucionaron. Después de la noche más fría en una década en Miami (22 de enero de 2020, 4.4°C), volvimos a medir la tolerancia al frío de seis especies de lagartos y las seis habían convergido en el mismo límite nuevo y más bajo, lo que revela que una sola noche extrema puede transformar la fisiología de toda una comunidad.",
@@ -484,7 +505,28 @@ window.I18N = {
     fall_view: "Verla en iNaturalist",
     fall_close: "Cerrar",
     falls_hidden_one: "1 reporte más no aparece en el mapa, para proteger la ubicación de quien lo hizo.",
-    falls_hidden_many: "{h} reportes más no aparecen en el mapa, para proteger la ubicación de quienes los hicieron."
+    falls_hidden_many: "{h} reportes más no aparecen en el mapa, para proteger la ubicación de quienes los hicieron.",
+
+    /* Press page: media contact and In the news */
+    press_jump: "Contacto para medios",
+    press_mc_h: "Contacto para medios",
+    press_mc_role: "Investigador principal, Escuela de Ciencias Biológicas, Instituto de Tecnología de Georgia (Georgia Tech)",
+    press_mc_topics: "Disponible para comentar sobre estudios de campo de largo plazo, selección natural en la naturaleza, lagartos anolis y evolución en tiempo real.",
+    press_gt_h: "Oficina de prensa de Georgia Tech",
+    press_gt_role: "Directora de Comunicaciones, Facultad de Ciencias, Instituto de Tecnología de Georgia (Georgia Tech)",
+    press_gt_link: "Página de contacto de la Facultad de Ciencias",
+    press_news_h: "En los medios",
+    press_news_p: "Medios que han entrevistado a James Stroud o han cubierto la investigación del laboratorio.",
+    press_news_cold: "Iguanas que caen y olas de frío",
+    press_news_evo: "Evolución en la naturaleza",
+    news_interview: "Entrevista",
+    news_quoted: "Citado",
+    news_tv: "Entrevista en televisión",
+    news_cnn: "Entrevista con CNN, republicada por ABC7",
+    news_by: "Artículo de James Stroud",
+    news_covers: "Cubre el estudio de 2020",
+    news_feature: "Reportaje",
+    news_en: "(en inglés)"
   }
 };
 
