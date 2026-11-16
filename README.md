@@ -9,6 +9,7 @@ From the Stroud Lab at Georgia Tech.
 | File | What it does |
 |---|---|
 | `index.html` | Home page: YES/NO answer, "Share tonight's answer" button, cartoon iguana, Florida map, thermometer slider, iNaturalist report band and counter |
+| `classroom.html` | Interactive lesson (Predict, Test, Record, Explain, Connect) with a collapsible, printable teacher guide. Linked as "Classroom" in every nav |
 | `press.html` | Press kit for reporters: pitch, story angles, key facts with citations, bio, contact, downloadable graphics. Linked as "Press" in every footer |
 | `assets/press/` | Press-kit downloads: link cards, square logo, transparent iguana, YES/NO screenshots (and your headshot, once uploaded) |
 | `scripts/press_screenshots.js` | Optional dev tool that re-takes the two press screenshots with Playwright |
@@ -33,6 +34,13 @@ From the Stroud Lab at Georgia Tech.
 - Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 55` slows the iguana down.
 - iNaturalist project: `INAT_PROJECT` in `scripts/update_forecast.py`. The counter counts observations since 1 November each winter.
 - Lab photos: upload images to `assets/people/` and add `photo:"assets/people/name.jpg"` to that person in `who.html`.
+
+## Classroom page
+
+- Wording (worksheet, questions, teacher guide, answer key): `assets/i18n.js`, keys starting `cl_` and `tg_`.
+- Simulation settings: `MODEL SETTINGS` at the top of the script in `classroom.html`. The two anole CTmin values are real (Table 1 of the 2020 paper); the starting temperature, the two time constants and the iguana's 44°F falling point are teaching simplifications and the page says so.
+- Printing: the two print buttons give a 4-page student worksheet, or the worksheet plus the teacher guide (which starts on a new page). Letter paper, no nav.
+- If you change the time constants, re-run the simulation at 40°F and update the minutes in the answer key (`tg_k1`).
 
 ## Press kit
 
