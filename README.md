@@ -16,6 +16,11 @@ From the Stroud Lab at Georgia Tech.
 | `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and the iNaturalist fall count, writes `status.json` |
 | `.github/workflows/update.yml` | Runs that script every hour |
 | `inaturalist-description.md` | Text to paste into the iNaturalist project. Not used by the site |
+| `og-yes.png`, `og-no.png` | 1200×630 link-preview cards (what Bluesky, X, iMessage etc. show) |
+| `og-image.png` | The card the pages actually point to. The hourly job copies the YES or NO card here whenever the answer changes |
+| `favicon.svg`, `apple-touch-icon.png` | Browser-tab and phone home-screen icons |
+| `scripts/make_og.py` | Redraws the preview cards and icons. Only needed if you change the artwork or wording (see below) |
+| `scripts/fonts/` | Archivo and Archivo Black (SIL Open Font License), used by `make_og.py` |
 
 `status.json` is created by the workflow; you never need to make it.
 
@@ -24,6 +29,19 @@ From the Stroud Lab at Georgia Tech.
 - Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 55` slows the iguana down.
 - iNaturalist project: `INAT_PROJECT` in `scripts/update_forecast.py`. The counter counts observations since 1 November each winter.
 - Lab photos: upload images to `assets/people/` and add `photo:"assets/people/name.jpg"` to that person in `who.html`.
+
+## Link previews (Open Graph)
+
+Every page has `og:` and `twitter:` tags pointing at `og-image.png`. Social sites cache previews, so a link shared yesterday may keep showing yesterday's answer for a while; that's expected.
+
+To change the cards: edit the text in `og_card()` in `scripts/make_og.py`, then on your computer run
+
+```
+pip install resvg-py
+python scripts/make_og.py
+```
+
+and commit the new PNGs. If you redraw the iguana in `index.html`, copy the new paths into `make_og.py` too.
 
 ## Deploy
 
