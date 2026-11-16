@@ -66,7 +66,27 @@ window.I18N = {
     r_phd: "PhD Student",
     r_ms: "Master's Researcher",
     r_ug: "Undergraduate Researcher",
-    r_incoming: "Incoming PhD Student"
+    r_incoming: "Incoming PhD Student",
+
+    /* Share tonight's answer (home page) */
+    share_btn: "Share tonight's answer",
+    share_making: "Making your image…",
+    share_h: "Your image is ready",
+    share_p: "Download it and post it anywhere, or copy the text to go with it.",
+    share_dl: "Download image",
+    share_copy: "Copy text",
+    share_close: "Close",
+    share_copied: "Copied!",
+    share_copy_fail: "Couldn't copy. Select the text below instead.",
+    share_fail: "Sorry, the image couldn't be made in this browser.",
+    share_alt: "Shareable image: {a} {l} {m}",
+    share_q: "Are iguanas falling?",
+    share_line_yes: "Iguanas are falling in {c} tonight",
+    share_line_no: "No iguanas falling tonight",
+    share_temp_yes: "Forecast low: {t}°F",
+    share_temp_no: "Coldest: {t}°F in {c}",
+    share_text_yes: "YES, iguanas are falling in Florida tonight 🦎🥶 Forecast low of {t}°F in {c}. Watch your head under the trees! {u}",
+    share_text_no: "No iguanas falling in Florida tonight 🦎☀️ Coldest spot: {t}°F in {c}. {u}"
   },
 
   es: {
@@ -134,7 +154,27 @@ window.I18N = {
     r_phd: "Estudiante de doctorado",
     r_ms: "Investigador de maestría",
     r_ug: "Investigador de pregrado",
-    r_incoming: "Futuro estudiante de doctorado"
+    r_incoming: "Futuro estudiante de doctorado",
+
+    /* Share tonight's answer (home page) */
+    share_btn: "Comparte la respuesta de hoy",
+    share_making: "Creando tu imagen…",
+    share_h: "Tu imagen está lista",
+    share_p: "Descárgala y publícala donde quieras, o copia el texto para acompañarla.",
+    share_dl: "Descargar imagen",
+    share_copy: "Copiar texto",
+    share_close: "Cerrar",
+    share_copied: "¡Copiado!",
+    share_copy_fail: "No se pudo copiar. Selecciona el texto de abajo.",
+    share_fail: "Lo sentimos, no se pudo crear la imagen en este navegador.",
+    share_alt: "Imagen para compartir: {a} {l} {m}",
+    share_q: "¿Se caen las iguanas?",
+    share_line_yes: "Esta noche caen iguanas en {c}",
+    share_line_no: "Esta noche no caen iguanas",
+    share_temp_yes: "Mínima pronosticada: {t}°F",
+    share_temp_no: "La más fría: {t}°F en {c}",
+    share_text_yes: "SÍ, esta noche caen iguanas en Florida 🦎🥶 Mínima pronosticada de {t}°F en {c}. ¡Cuidado con la cabeza debajo de los árboles! {u}",
+    share_text_no: "Esta noche no caen iguanas en Florida 🦎☀️ El lugar más frío: {t}°F en {c}. {u}"
   }
 };
 

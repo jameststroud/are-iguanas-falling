@@ -88,6 +88,16 @@ body.cold .flake{opacity:1;animation:snow 5s linear infinite}
 body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
 @keyframes fall{0%{transform:none}10%{transform:rotate(-5deg)}20%{transform:rotate(6deg)}28%{transform:translate(0,8px) rotate(25deg)}68%{transform:translate(-14px,240px) rotate(180deg)}74%{transform:translate(-14px,218px) rotate(176deg)}80%,100%{transform:translate(-14px,229px) rotate(180deg)}}
 @keyframes snow{from{transform:translateY(-20px)}to{transform:translateY(60px)}}
+.sharerow{margin-top:18px}
+.sharepanel{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:start;margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;max-width:720px}
+.sharepanel[hidden]{display:none}
+.sharepanel img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
+.sharepanel .sh{font:400 20px "Archivo Black",sans-serif;margin:0 0 6px}
+.sharepanel p{margin:0 0 12px}
+.sharepanel .acts{display:flex;flex-wrap:wrap;gap:10px}
+.sharepanel textarea{width:100%;font:15px/1.4 Archivo,sans-serif;margin-top:12px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
+.sharemsg{font-weight:700;color:var(--soft);min-height:1.5em;margin:10px 0 0!important}
+@media(max-width:520px){.sharepanel{grid-template-columns:minmax(0,1fr)}.sharepanel img{max-width:240px}}
 @media(max-width:820px){.stage,.sci,.report{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.ctrl{grid-template-columns:minmax(0,1fr) auto}.ctrl label{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){.tail,.head,.dew,body.cold .flake{animation:none!important}
@@ -108,6 +118,21 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
   <h1 data-i18n="q">Are iguanas falling out of the trees in Florida?</h1>
   <div class="big" id="answer" aria-live="polite">NO.</div>
   <p class="sub" id="why">Checking the forecast…</p>
+  <div class="sharerow"><button class="solid" id="share" type="button" hidden data-i18n="share_btn">Share tonight's answer</button></div>
+  <div class="sharepanel" id="sharePanel" hidden>
+    <img id="shareImg" alt="" width="1080" height="1350">
+    <div>
+      <p class="sh" id="shareH" tabindex="-1" data-i18n="share_h">Your image is ready</p>
+      <p data-i18n="share_p">Download it and post it anywhere, or copy the text to go with it.</p>
+      <div class="acts">
+        <a class="btn solid" id="shareDl" href="#" download="are-iguanas-falling.png" data-i18n="share_dl">Download image</a>
+        <button type="button" id="shareCopy" data-i18n="share_copy">Copy text</button>
+        <button type="button" id="shareClose" data-i18n="share_close">Close</button>
+      </div>
+      <textarea id="shareText" rows="3" readonly aria-labelledby="shareCopy"></textarea>
+      <p class="sharemsg" id="shareMsg" aria-live="polite"></p>
+    </div>
+  </div>
 </div></header>
 
 <main class="band" style="padding-top:12px"><div class="wrap">
@@ -261,6 +286,7 @@ function words(){
 }
 function show(rows,note){
   live=rows;if(note)liveNote=note;drawMap(rows);words();
+  $("share").hidden=liveNote==="map_sample";
   const c=rows.reduce((a,b)=>b.min<a.min?b:a);setScene(Math.round(c.min));
 }
 async function load(){
@@ -273,6 +299,96 @@ async function load(){
     show(CITIES.map((c,i)=>({...c,min:Math.min(...j[i].daily.temperature_2m_min)})),"map_plain");return}catch(e){}
   show(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})),"map_sample");
 }
+
+/* ===== Share tonight's answer =====
+   Always shares the real forecast (live), never the what-if slider value. */
+const SITE="https://jameststroud.github.io/are-iguanas-falling/";
+const PAL={warm:{"--sky1":"#ffd27a","--sky2":"#8fd3ef","--ground":"#7cb342","--ig":"#6fb53a","--ig2":"#3d7a22","--belly":"#c4df82"},
+           cold:{"--sky1":"#c9e4f5","--sky2":"#7fa9c9","--ground":"#a9c3b0","--ig":"#8fb3a8","--ig2":"#4d6f6a","--belly":"#d3e3de"}};
+function realAnswer(){
+  if(!live||liveNote==="map_sample")return null;
+  const c=live.reduce((a,b)=>b.min<a.min?b:a);const t=Math.round(c.min);
+  return {yes:t<=FALL,c:c.n,t:t};
+}
+/* The page's own cartoon scene, frozen in the YES (fallen) or NO (on the branch) pose */
+function sceneImage(yes){
+  const svg=document.querySelector(".scene").cloneNode(true);
+  const bb=$("ig").getBBox(),cx=bb.x+bb.width/2,cy=bb.y+bb.height/2;
+  const ig=svg.querySelector("#ig");ig.removeAttribute("class");
+  ig.setAttribute("transform",yes?`translate(-14,229) rotate(180 ${cx} ${cy})`:"");
+  svg.querySelector(".lid").setAttribute("opacity",yes?1:0);
+  svg.querySelector(".flake").setAttribute("opacity",yes?1:0);
+  svg.querySelector(".sun").setAttribute("opacity",yes?0:1);
+  svg.setAttribute("width",600);svg.setAttribute("height",480);
+  let x=new XMLSerializer().serializeToString(svg);
+  const pal=PAL[yes?"cold":"warm"];
+  x=x.replace(/var\((--[a-z0-9]+)\)/g,(m,k)=>pal[k]||m);
+  return new Promise((ok,bad)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=bad;
+    im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(x);});
+}
+function wrap(g,text,x,y,maxW,lh){
+  const words=text.split(" ");let line="";
+  for(const w of words){const test=line?line+" "+w:w;
+    if(g.measureText(test).width>maxW&&line){g.fillText(line,x,y);line=w;y+=lh;}else line=test;}
+  g.fillText(line,x,y);return y;
+}
+async function makeShareImage(a){
+  await document.fonts.ready;
+  await Promise.all(['400 100px "Archivo Black"','700 40px Archivo','400 40px Archivo'].map(f=>document.fonts.load(f).catch(()=>{})));
+  const W=1080,H=1350,M=72,cv=document.createElement("canvas");cv.width=W;cv.height=H;
+  const g=cv.getContext("2d"),ink="#13261d",soft="#3d5246";
+  g.fillStyle=a.yes?"#e9f4fb":"#fff6e0";g.fillRect(0,0,W,H);
+  g.fillStyle="#ff7a2f";g.fillRect(0,0,W,18);
+  g.textBaseline="alphabetic";g.fillStyle=ink;
+  g.font='400 58px "Archivo Black", sans-serif';
+  wrap(g,window.t("share_q"),M,138,W-2*M,66);
+  g.fillStyle=a.yes?"#2f7fc0":"#2f7d32";
+  g.font='400 270px "Archivo Black", sans-serif';
+  g.fillText(window.t(a.yes?"yes":"no"),M-8,420);
+  g.fillStyle=ink;g.font='700 46px Archivo, sans-serif';
+  const y=wrap(g,window.t(a.yes?"share_line_yes":"share_line_no",{c:a.c}),M,500,W-2*M,54);
+  g.fillStyle=soft;g.font='400 42px Archivo, sans-serif';
+  g.fillText(window.t(a.yes?"share_temp_yes":"share_temp_no",{c:a.c,t:a.t}),M,y+58);
+  const im=await sceneImage(a.yes);
+  const top=y+100,h=Math.min(600,H-150-top),sh=h*600/(W-2*M);
+  g.save();g.beginPath();g.roundRect(M,top,W-2*M,h,32);g.clip();
+  g.drawImage(im,0,Math.max(0,450-sh),600,sh,M,top,W-2*M,h);g.restore();
+  const date=new Date().toLocaleDateString(window.getLang()==="es"?"es-US":"en-US",{weekday:"long",month:"long",day:"numeric",year:"numeric"});
+  g.fillStyle=ink;g.font='700 36px Archivo, sans-serif';g.fillText(date,M,H-92);
+  g.fillStyle=soft;g.font='400 32px Archivo, sans-serif';g.fillText(SITE.replace("https://","").replace(/\/$/,""),M,H-46);
+  return new Promise(ok=>cv.toBlob(b=>ok(b),"image/png"));
+}
+function shareText(a){return window.t(a.yes?"share_text_yes":"share_text_no",{c:a.c,t:a.t,u:SITE});}
+let shareURL=null;
+async function openPanel(a,blob,keepFocus){
+  if(shareURL)URL.revokeObjectURL(shareURL);
+  shareURL=URL.createObjectURL(blob);
+  $("shareImg").src=shareURL;$("shareDl").href=shareURL;
+  $("shareImg").alt=window.t("share_alt",{a:window.t(a.yes?"yes":"no"),l:window.t(a.yes?"share_line_yes":"share_line_no",{c:a.c}),m:window.t(a.yes?"share_temp_yes":"share_temp_no",{c:a.c,t:a.t})});
+  $("shareText").value=shareText(a);$("shareMsg").textContent="";
+  $("sharePanel").hidden=false;if(!keepFocus)$("shareH").focus();
+}
+$("share").addEventListener("click",async()=>{
+  const a=realAnswer();if(!a)return;
+  const btn=$("share");btn.disabled=true;btn.textContent=window.t("share_making");
+  try{
+    const blob=await makeShareImage(a);
+    if(window.track)window.track("share");
+    const file=new File([blob],"are-iguanas-falling.png",{type:"image/png"});
+    if(navigator.canShare&&navigator.share&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file],text:shareText(a),title:window.t("share_q")});}
+      catch(e){if(e.name!=="AbortError")await openPanel(a,blob);}
+    }else await openPanel(a,blob);
+  }catch(e){$("sharePanel").hidden=false;$("shareMsg").textContent=window.t("share_fail");}
+  finally{btn.disabled=false;btn.textContent=window.t("share_btn");}
+});
+$("shareCopy").addEventListener("click",async()=>{
+  const txt=$("shareText").value;
+  try{await navigator.clipboard.writeText(txt);$("shareMsg").textContent=window.t("share_copied");}
+  catch(e){$("shareText").select();$("shareMsg").textContent=window.t("share_copy_fail");}
+});
+$("shareClose").addEventListener("click",()=>{$("sharePanel").hidden=true;$("share").focus();});
+window.onLangChange(async()=>{const a=realAnswer();if(a&&!$("sharePanel").hidden){try{await openPanel(a,await makeShareImage(a),true);}catch(e){}}});
 $("t").addEventListener("input",e=>setScene(+e.target.value));
 $("cold").addEventListener("click",()=>setScene(38,true));
 $("live").addEventListener("click",()=>{if(live)show(live);});

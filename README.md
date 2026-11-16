@@ -8,7 +8,7 @@ From the Stroud Lab at Georgia Tech.
 
 | File | What it does |
 |---|---|
-| `index.html` | Home page: YES/NO answer, cartoon iguana, Florida map, thermometer slider, iNaturalist report band and counter |
+| `index.html` | Home page: YES/NO answer, "Share tonight's answer" button, cartoon iguana, Florida map, thermometer slider, iNaturalist report band and counter |
 | `who.html` | "Who are we?" page. Lab roster is near the bottom of the file (`PEOPLE` and `ALUMNI`) |
 | `assets/i18n.js` | Every piece of English and Spanish text on the site. Edit wording here |
 | `assets/site.css` | Shared look (colours, fonts, nav, buttons) |
@@ -29,6 +29,10 @@ From the Stroud Lab at Georgia Tech.
 - Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 55` slows the iguana down.
 - iNaturalist project: `INAT_PROJECT` in `scripts/update_forecast.py`. The counter counts observations since 1 November each winter.
 - Lab photos: upload images to `assets/people/` and add `photo:"assets/people/name.jpg"` to that person in `who.html`.
+
+## Share button
+
+"Share tonight's answer" draws a 1080×1350 PNG in the browser (code in `index.html`, under `Share tonight's answer`). It always uses the real forecast, never the what-if slider. On phones it opens the system share sheet; elsewhere it shows a preview with **Download image** and **Copy text**. The wording lives in `assets/i18n.js` under the `share_` keys.
 
 ## Link previews (Open Graph)
 
