@@ -129,7 +129,10 @@ window.I18N = {
     press_dl_iguana: "Iguana, transparent background",
     press_dl_shotyes: "Screenshot, YES night",
     press_dl_shotno: "Screenshot, NO night",
-    press_dl_btn: "Download"
+    press_dl_btn: "Download",
+
+    /* Footer privacy note (every page) */
+    privacy: "We count visits with GoatCounter, which uses no cookies and collects no personal data."
   },
 
   es: {
@@ -260,7 +263,10 @@ window.I18N = {
     press_dl_iguana: "Iguana, fondo transparente",
     press_dl_shotyes: "Captura de pantalla, noche de SÍ",
     press_dl_shotno: "Captura de pantalla, noche de NO",
-    press_dl_btn: "Descargar"
+    press_dl_btn: "Descargar",
+
+    /* Footer privacy note (every page) */
+    privacy: "Contamos las visitas con GoatCounter, que no usa cookies ni recopila datos personales."
   }
 };
 

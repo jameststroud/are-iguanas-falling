@@ -192,7 +192,7 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
     <div class="temp" id="tv">70°F</div>
     <div class="row">
       <span class="state" id="st"></span>
-      <button class="solid" id="cold" type="button" data-i18n="coldfront">Send a cold front</button>
+      <button class="solid" id="cold" type="button" data-track="cold-front" data-i18n="coldfront">Send a cold front</button>
       <button id="live" type="button" data-i18n="backlive">Back to the real forecast</button>
     </div>
   </div>
@@ -240,9 +240,11 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
   <p data-i18n="foot1"></p>
   <p data-i18n="foot2"></p>
   <p data-i18n="foot_lab">Stroud Lab, School of Biological Sciences, Georgia Institute of Technology</p>
+  <p data-i18n="privacy">We count visits with GoatCounter, which uses no cookies and collects no personal data.</p>
 </div></footer>
 
 <script src="assets/i18n.js"></script>
+<script src="assets/analytics.js"></script>
 <script>
 {
 const FALL=44, CHILLY=55;

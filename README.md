@@ -14,6 +14,7 @@ From the Stroud Lab at Georgia Tech.
 | `scripts/press_screenshots.js` | Optional dev tool that re-takes the two press screenshots with Playwright |
 | `who.html` | "Who are we?" page. Lab roster is near the bottom of the file (`PEOPLE` and `ALUMNI`) |
 | `assets/i18n.js` | Every piece of English and Spanish text on the site. Edit wording here |
+| `assets/analytics.js` | GoatCounter visit counter and event tracking. Your GoatCounter code goes at the top |
 | `assets/site.css` | Shared look (colours, fonts, nav, buttons) |
 | `animations/` | Three reserve animations (field guide, thermal camera, night silhouette). Not linked from the site; visit `/animations/` to see them |
 | `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and the iNaturalist fall count, writes `status.json` |
@@ -40,6 +41,35 @@ From the Stroud Lab at Georgia Tech.
 - **Contact:** fill in the email and phone in `press.html` (search for `TODO(James)`).
 - Downloads list: the `FILES` array near the bottom of `press.html`.
 - `make_og.py` also writes the logo, the transparent iguana and copies of the link cards into `assets/press/`.
+
+## Visitor counts (GoatCounter)
+
+GoatCounter counts visits without cookies or personal data. Until you add your code, nothing is loaded. If an ad blocker stops it, the site works as normal.
+
+**Setting it up**
+
+1. Sign up at https://www.goatcounter.com/signup (free for non-commercial use). Pick a code, e.g. `iguanas`; your dashboard becomes `https://iguanas.goatcounter.com`.
+2. In `assets/analytics.js`, change `var GOATCOUNTER_CODE = "GOATCOUNTER_CODE";` to your code, e.g. `var GOATCOUNTER_CODE = "iguanas";`. That one line covers every page.
+3. Visit the site; pageviews appear in the dashboard within a few seconds (turn off your own ad blocker to check).
+
+**Events counted** (they show up in the dashboard like pages):
+
+| Event name | When |
+|---|---|
+| `share` | "Share tonight's answer" made an image |
+| `cold-front` | "Send a cold front" button |
+| `lang-switch-to-es` / `lang-switch-to-en` | Language button |
+| `inaturalist-click` | Any link to iNaturalist |
+| `press-download-<file>` | A press-kit download |
+| `classroom-visit` | Someone opened the Classroom page |
+
+To count another button or link, add `data-track="some-name"` to it.
+
+**Numbers for NSF Broader Impacts reports**
+
+- Quick totals: in the dashboard, set the date range to your reporting period. It shows total visits, visits per page (e.g. `/classroom.html`), the event counts above, and visitor locations by country and US state.
+- Full export: in your GoatCounter site settings, use **Export** to download a ZIP of JSON files (you can set a start date). The CSV export only works if "Individual pageviews" is turned on in the site settings, so turn that on now if you'll want per-visit rows later.
+- Useful lines for a report: total visits in the period, visits during named cold snaps, classroom page visits, share images made, and iNaturalist click-throughs (alongside the iNaturalist observation count on the home page).
 
 ## Cold-snap posts on Bluesky
 
