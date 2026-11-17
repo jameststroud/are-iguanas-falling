@@ -20,10 +20,10 @@ From the Stroud Lab at Georgia Tech.
 | `animations/` | Three reserve animations (field guide, thermal camera, night silhouette). Not linked from the site; visit `/animations/` to see them |
 | `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and this winter's iNaturalist reports, writes `status.json` and `falls.json`, swaps the preview image, posts to Bluesky on a NO→YES flip |
 | `falls.json` | This winter's fallen-iguana reports for the map: total count, number hidden for privacy, and public points (2-decimal coordinates, date, observation link) |
-| `.github/workflows/update.yml` | Runs that script every hour |
+| `.github/workflows/update.yml` | Runs that script once a day, at 20:43 UTC (3:43 PM in Florida in winter, 4:43 PM in summer). Change the `cron` line to change the time; run it by hand any time from the Actions tab |
 | `inaturalist-description.md` | Text to paste into the iNaturalist project. Not used by the site |
 | `og-yes.png`, `og-no.png` | 1200×630 link-preview cards (what Bluesky, X, iMessage etc. show) |
-| `og-image.png` | The card the pages actually point to. The hourly job copies the YES or NO card here whenever the answer changes |
+| `og-image.png` | The card the pages actually point to. The daily job copies the YES or NO card here whenever the answer changes |
 | `favicon.svg`, `apple-touch-icon.png` | Browser-tab and phone home-screen icons |
 | `scripts/make_og.py` | Redraws the preview cards and icons. Only needed if you change the artwork or wording (see below) |
 | `scripts/fonts/` | Archivo and Archivo Black (SIL Open Font License), used by `make_og.py` |
@@ -58,7 +58,7 @@ Every page loads `assets/site.css`, `assets/i18n.js` and `assets/analytics.js` w
 
 ## Temperature map
 
-The Florida map on the home page is coloured by the forecast overnight low. Each hour the job also fetches the low for 118 forecast points across the state (`GRID` in `scripts/update_forecast.py`, 2 extra Open-Meteo calls) and stores them as `grid` in `status.json`. The page interpolates between those points (inverse-distance weighting), clips the result to the Florida outline, and draws:
+The Florida map on the home page is coloured by the forecast overnight low. Each day the job also fetches the low for 118 forecast points across the state (`GRID` in `scripts/update_forecast.py`, 2 extra Open-Meteo calls) and stores them as `grid` in `status.json`. The page interpolates between those points (inverse-distance weighting), clips the result to the Florida outline, and draws:
 
 - **44°F and below** as one blue class (darker = colder), outlined in white;
 - **above 44°F** as a ramp from pale cream (45°F) to deep orange (80°F), with a vertical scale bar to the right of the map;
@@ -71,7 +71,7 @@ If the grid fetch fails, the page colours the map from the 8 cities instead.
 
 ## Map of reported falls
 
-Each hour the job fetches this winter's observations (since 1 November) from the iNaturalist project, 200 per page with a 1-second pause between pages, and writes `falls.json`. Obscured and private records (by the observer or because of the taxon) are never written with coordinates; they only add to the count. Public coordinates are rounded to 2 decimals (about 1 km).
+Each day the job fetches this winter's observations (since 1 November) from the iNaturalist project, 200 per page with a 1-second pause between pages, and writes `falls.json`. Obscured and private records (by the observer or because of the taxon) are never written with coordinates; they only add to the count. Public coordinates are rounded to 2 decimals (about 1 km).
 
 On the home page each report is a small dark diamond on the Florida map (city forecasts stay round dots). Tapping one shows its date and a link to the observation. The counter and the markers both read `falls.json`, so they always agree, and a note under the map says how many reports are hidden for privacy. With no reports, there are no markers and no "Reported fall" legend entry.
 
@@ -106,7 +106,7 @@ To count another button or link, add `data-track="some-name"` to it.
 
 ## Cold-snap posts on Bluesky
 
-When the answer flips from NO to YES, the hourly job posts to the lab's Bluesky account: an English post with the YES card attached, and a Spanish reply. It posts at most once every 12 hours and never posts an "all clear". The wording is in `post_texts()` in `scripts/update_forecast.py`.
+When the answer flips from NO to YES, the daily job posts to the lab's Bluesky account: an English post with the YES card attached, and a Spanish reply. It posts at most once every 12 hours and never posts an "all clear". The wording is in `post_texts()` in `scripts/update_forecast.py`.
 
 **Setting it up**
 
@@ -145,7 +145,7 @@ and commit the new PNGs. If you redraw the iguana in `index.html`, copy the new 
 2. Settings → Pages → Build and deployment → Deploy from a branch → `main` / `(root)` → Save.
 3. Settings → Actions → General → Workflow permissions → **Read and write permissions** → Save.
 4. Actions tab → "Update iguana forecast" → Run workflow. This creates the first `status.json`.
-5. The site appears at https://jameststroud.github.io/are-iguanas-falling/ within a few minutes.
+5. The site appears at https://www.areiguanasfallinginflorida.com/ within a few minutes.
 6. Custom domain later: Settings → Pages → Custom domain, then point your DNS at GitHub Pages.
 
 ## Upload note

@@ -22,7 +22,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 FONTS = [str(p) for p in (Path(__file__).parent / "fonts").glob("*.ttf")]
-URL_TEXT = "jameststroud.github.io/are-iguanas-falling"
+URL_TEXT = "areiguanasfallinginflorida.com"
 
 # Colours from index.html: warm (NO) and cold (YES) palettes
 WARM = dict(sky1="#ffd27a", sky2="#8fd3ef", ground="#7cb342", ig="#6fb53a", ig2="#3d7a22", belly="#c4df82")

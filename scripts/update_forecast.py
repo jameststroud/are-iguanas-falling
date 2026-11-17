@@ -1,6 +1,6 @@
 """Fetch overnight lows for Florida cities and write status.json.
 
-Run hourly by GitHub Actions. The website reads status.json, so no matter
+Run once a day (mid-afternoon in Florida) by GitHub Actions. The website reads status.json, so no matter
 how many people visit, the weather API only sees 24 requests a day.
 
 Nothing is allowed to fail the run. Open-Meteo calls are retried with a
@@ -28,11 +28,11 @@ ROOT = Path(__file__).resolve().parent.parent
 STATUS = ROOT / "status.json"
 FALLS = ROOT / "falls.json"
 PER_PAGE = 200   # iNaturalist's maximum page size
-MAX_PAGES = 25   # 5,000 reports; keeps the hourly job well under 2 minutes
+MAX_PAGES = 25   # 5,000 reports; keeps the job well under 2 minutes
 INAT_PROJECT = "are-iguanas-falling"  # iNaturalist project slug
-USER_AGENT = "are-iguanas-falling/1.0 (Stroud Lab, Georgia Tech; https://jameststroud.github.io/are-iguanas-falling/)"
+USER_AGENT = "are-iguanas-falling/1.0 (Stroud Lab, Georgia Tech; https://www.areiguanasfallinginflorida.com/)"
 
-SITE_URL = "https://jameststroud.github.io/are-iguanas-falling/"
+SITE_URL = "https://www.areiguanasfallinginflorida.com/"
 BSKY_HOST = "https://bsky.social"
 POST_GAP = timedelta(hours=12)  # never post more often than this
 
