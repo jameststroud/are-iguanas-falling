@@ -232,7 +232,7 @@ function render(){
    </div>`}).join("");
 }
 /* TODO(James): after uploading assets/press/stroud-headshot.jpg, change false to true */
-const HAS_HEADSHOT=false;
+const HAS_HEADSHOT=true;
 if(HAS_HEADSHOT){const img=new Image();img.src="assets/press/stroud-headshot.jpg";
   const h=document.getElementById("headshot");h.textContent="";h.appendChild(img);
   window.onLangChange(()=>{img.alt=window.t("press_headshot_alt");});}
