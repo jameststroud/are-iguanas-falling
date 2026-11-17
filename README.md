@@ -32,7 +32,7 @@ From the Stroud Lab at Georgia Tech.
 
 ## Settings you might change
 
-- Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 55` slows the iguana down.
+- Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 60`: from 45°F to 60°F the iguana is chilly and sluggish with no sunglasses; above 60°F it basks in sunglasses.
 - iNaturalist project: `INAT_PROJECT` in `scripts/update_forecast.py`. The counter counts observations since 1 November each winter.
 - Lab photos: upload images to `assets/people/` and add `photo:"assets/people/name.jpg"` to that person in `who.html`.
 

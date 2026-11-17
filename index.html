@@ -110,6 +110,9 @@ body.chilly .tail{animation-duration:9s}
 body.chilly .head,body.chilly .dew{animation:none}
 body.chilly .lid{opacity:.75}
 body.chilly .sun{opacity:.5}
+body.chilly .brow{opacity:.8}
+body.seq-chilly.had-shades .shades{opacity:1}
+body.seq-chilly .sh{animation:shadesOff .5s ease-in forwards}
 body.cold .tail,body.cold .head,body.cold .dew{animation:none}
 body.cold .sun{opacity:0}
 body.cold .flake{opacity:1;animation:snow 5s linear infinite}
@@ -157,7 +160,7 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
 @media(max-width:600px){.ctrl{grid-template-columns:minmax(0,1fr) auto}.ctrl label{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){.tail,.head,.dew,body.cold .flake{animation:none!important}
   body.seq-no .sh,body.seq-no .spark,body.seq-yes #cam,body.seq-yes .shake,body.seq-yes .jaw,body.seq-yes .puff,body.seq-yes .brrr,body.seq-yes .mouth,body.seq-yes .sh{animation:none}
-  body.seq-yes .shades{opacity:0!important}
+  body.seq-yes .shades,body.seq-chilly .shades{opacity:0!important}
   body.seq-yes .lid{animation:none;opacity:1}
   body.seq-yes .ig{animation:none;transform:translate(-14px,229px) rotate(180deg)}}
 </style>
@@ -345,7 +348,7 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
 <script src="assets/analytics.js"></script>
 <script>
 {
-const FALL=44, CHILLY=55;
+const FALL=44, CHILLY=60; /* 44 and below: falling. 45 to 60: chilly, no sunglasses. Above 60: sunglasses. */
 const INAT="https://www.inaturalist.org/projects/are-iguanas-falling";
 const CITIES=[
  {n:"Miami",lat:25.76,lon:-80.19,side:"r"},{n:"Fort Lauderdale",lat:26.12,lon:-80.14,side:"r"},
@@ -368,16 +371,16 @@ let lastAns=null,live=null,liveNote="map_plain",liveDate="",lastLevel=null,scene
 /* Restart a CSS sequence: "no" = sunglasses land, "yes" = zoom, shiver, fall */
 function runSeq(kind){
   const b=document.body,had=b.classList.contains("seq-no");
-  b.classList.remove("seq-yes","seq-no","had-shades");void b.offsetWidth;
-  if(kind==="yes"&&had)b.classList.add("had-shades");
+  b.classList.remove("seq-yes","seq-no","seq-chilly","had-shades");void b.offsetWidth;
+  if(kind!=="no"&&had)b.classList.add("had-shades");
   b.classList.add("seq-"+kind);
 }
 function setScene(t,replay,quiet){
   sceneT=t;
   const L=level(t);document.body.classList.remove("cold","chilly","warm");document.body.classList.add(L);
-  if(!quiet){const ans=L==="cold"?"yes":"no";
-    if(ans!==lastAns||(replay&&ans==="yes"))runSeq(ans);
-    lastAns=ans;}
+  if(!quiet){const kind=L==="cold"?"yes":L==="chilly"?"chilly":"no";
+    if(kind!==lastAns||(replay&&kind==="yes"))runSeq(kind);
+    lastAns=kind;}
   lastLevel=L;
   $("tv").textContent=t+"°F";$("t").value=t;
   $("st").textContent=window.t("st_"+L);
@@ -456,6 +459,7 @@ async function load(){
    Always shares the real forecast (live), never the what-if slider value. */
 const SITE="https://jameststroud.github.io/are-iguanas-falling/";
 const PAL={warm:{"--sky1":"#ffd27a","--sky2":"#8fd3ef","--ground":"#7cb342","--ig":"#6fb53a","--ig2":"#3d7a22","--belly":"#c4df82"},
+           chilly:{"--sky1":"#ffe9b8","--sky2":"#a9cfe2","--ground":"#7cb342","--ig":"#7fae55","--ig2":"#456f30","--belly":"#cbdc9f"},
            cold:{"--sky1":"#c9e4f5","--sky2":"#7fa9c9","--ground":"#a9c3b0","--ig":"#86b8d8","--ig2":"#3a6a8e","--belly":"#e2f2fc"}};
 function realAnswer(){
   if(!live||liveNote==="map_sample")return null;
@@ -463,20 +467,21 @@ function realAnswer(){
   return {yes:t<=FALL,c:c.n,t:t};
 }
 /* The page's own cartoon scene, frozen in the YES (fallen) or NO (on the branch) pose */
-function sceneImage(yes){
+function sceneImage(yes,t){
+  const mood=yes?"cold":(t!=null&&t<=CHILLY)?"chilly":"warm";
   const svg=document.querySelector(".scene").cloneNode(true);
   const cx=-58,cy=4; /* same fixed pivot as the CSS fall */
   const ig=svg.querySelector("#ig");ig.removeAttribute("class");
   ig.setAttribute("transform",yes?`translate(-14,229) rotate(180 ${cx} ${cy})`:"");
-  svg.querySelector(".lid").setAttribute("opacity",yes?1:0);
+  svg.querySelector(".lid").setAttribute("opacity",yes?1:mood==="chilly"?.75:0);
   svg.querySelector(".flake").setAttribute("opacity",yes?1:0);
-  svg.querySelector(".sun").setAttribute("opacity",yes?0:1);
+  svg.querySelector(".sun").setAttribute("opacity",yes?0:mood==="chilly"?.5:1);
   svg.querySelector("#cam").removeAttribute("id");
   const vis=(sel,on)=>svg.querySelectorAll(sel).forEach(e=>e.setAttribute("opacity",on?1:0));
-  vis(".shades",!yes);vis(".frost,.brow,.ice",yes);vis(".mouth,.puff,.brrr,.spark",false);
+  vis(".shades",mood==="warm");vis(".frost,.ice",yes);vis(".brow",mood!=="warm");vis(".mouth,.puff,.brrr,.spark",false);
   svg.setAttribute("width",600);svg.setAttribute("height",480);
   let x=new XMLSerializer().serializeToString(svg);
-  const pal=PAL[yes?"cold":"warm"];
+  const pal=PAL[mood];
   x=x.replace(/var\((--[a-z0-9]+)\)/g,(m,k)=>pal[k]||m);
   return new Promise((ok,bad)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=bad;
     im.src="data:image/svg+xml;charset=utf-8,"+encodeURIComponent(x);});
@@ -504,7 +509,7 @@ async function makeShareImage(a){
   const y=wrap(g,window.t(a.yes?"share_line_yes":"share_line_no",{c:a.c}),M,500,W-2*M,54);
   g.fillStyle=soft;g.font='400 42px Archivo, sans-serif';
   g.fillText(window.t(a.yes?"share_temp_yes":"share_temp_no",{c:a.c,t:a.t}),M,y+58);
-  const im=await sceneImage(a.yes);
+  const im=await sceneImage(a.yes,a.t);
   const top=y+100,h=Math.min(600,H-150-top),sh=h*600/(W-2*M);
   g.save();g.beginPath();g.roundRect(M,top,W-2*M,h,32);g.clip();
   g.drawImage(im,0,Math.max(0,450-sh),600,sh,M,top,W-2*M,h);g.restore();
