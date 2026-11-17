@@ -70,6 +70,8 @@ The Florida map on the home page is coloured by the forecast overnight low. Each
 
 If the grid fetch fails, the page colours the map from the 11 cities instead.
 
+**The answer** has three states: YES (44°F and below), an orange NOT YET. (45–60°F, the same "chilly" band as the cartoon and map iguanas, `CHILLY` in `index.html`) and NO (above 60°F). Dragging the what-if thermometer or Send a cold front switches the big answer to the thermometer's value, with the real forecast in the line below. The share image follows the real forecast; Bluesky only ever posts on a YES.
+
 **Picking a city.** Visitors can click a city on the map (or choose it from the "Pick a city" list under the map). The heading, YES/NO, explanation, cartoon iguana and the share image then follow that city's forecast; clicking it again, or choosing "All of Florida", goes back to the coldest city. The scale bar's captions (Basking, Sluggish, Iguana falling zone, Timber!) are the `zone_` keys in `assets/i18n.js`. Colours are set in `COLD_STOPS` and `WARM_STOPS` in `index.html`.
 
 ## ZIP code forecast

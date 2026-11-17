@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://www.areiguanasfallinginflorida.com/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=20261117j">
+<link rel="stylesheet" href="assets/site.css?v=20261117k">
 <style>
 /* VOICE: a goofy roadside sign with a real scientist behind it
    IDEA: a Florida weather board crossed with the Publix sub sign: one huge YES/NO
@@ -38,6 +38,8 @@ body.chilly{--sky1:#ffe9b8;--sky2:#a9cfe2;--ig:#7fae55;--ig2:#456f30;--belly:#cb
 .top{padding-bottom:12px}
 .big{font-size:clamp(88px,17vw,210px);letter-spacing:-.02em;color:var(--leaf);margin:4px 0 2px}
 body.cold .big{color:var(--ice)}
+#answer{white-space:nowrap}
+#answer.notyet{color:light-dark(#b86e00,#f0a640)}
 .stage{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(16px,2.5vw,32px);align-items:stretch}
 .scene{display:block;width:100%;height:auto;aspect-ratio:600/480}
 .mapbox{padding:14px 14px 6px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
@@ -426,8 +428,8 @@ header.top .wrap.hero>#scenePanel{grid-column:2;grid-row:1 / span 9;align-self:c
   <button type="button" class="iyclose" id="iykykClose" data-i18n-aria="iykyk_close" aria-label="Close the retro animation">×</button>
   <iframe id="iykykFrame" data-i18n-aria="iykyk_title" aria-label="Retro falling-iguana animation"></iframe>
 </dialog>
-<script src="assets/i18n.js?v=20261117j"></script>
-<script src="assets/analytics.js?v=20261117j"></script>
+<script src="assets/i18n.js?v=20261117k"></script>
+<script src="assets/analytics.js?v=20261117k"></script>
 <script>
 {
 const FALL=44, CHILLY=60; /* 44 and below: falling. 45 to 60: chilly, no sunglasses. Above 60: sunglasses. */
@@ -631,6 +633,16 @@ function drawMap(rows){
     return `<button type="button" class="cityhit" data-city="${n}" aria-pressed="${selCity===n}" aria-label="${window.t("city_btn",{c:n})}" style="left:${x.toFixed(2)}%;top:${y.toFixed(2)}%;width:${w.toFixed(2)}%;height:${h.toFixed(2)}%"></button>`;}).join("");
   drawChips();
 }
+/* The big answer: YES (44°F and below), orange NOT YET. (45-55°F), NO (above 55°F) */
+function setAnswer(L){const el=$("answer");
+  el.textContent=window.t(L==="cold"?"yes":L==="chilly"?"notyet":"no");
+  el.classList.toggle("notyet",L==="chilly");fitAnswer();}
+/* keep the big answer on one line: shrink it until it fits its column */
+function fitAnswer(){const el=$("answer");el.style.fontSize="";
+  let fs=parseFloat(getComputedStyle(el).fontSize);
+  while(el.scrollWidth>el.clientWidth+1&&fs>36){fs-=4;el.style.fontSize=fs+"px";}}
+addEventListener("resize",()=>fitAnswer());
+if(document.fonts)document.fonts.ready.then(()=>fitAnswer());
 function words(){
   if(!live)return;
   const c=shownCity();const t=Math.round(c.min);const L=c.north?"warm":level(t);
@@ -638,11 +650,11 @@ function words(){
   zipStatus();
   updIykyk();
   if(whatIf){ /* the what-if thermometer drives the big answer; the real forecast stays in the line below */
-    const W=level(sceneT),real=window.t("wi_real",{a:window.t(L==="cold"?"yes_word":"no_word"),t:t,c:esc2(c.sn||c.n)});
-    $("answer").textContent=window.t(W==="cold"?"yes":"no");
+    const W=level(sceneT),real=window.t("wi_real",{a:window.t(L==="cold"?"yes_word":L==="chilly"?"notyet_word":"no_word"),t:t,c:esc2(c.sn||c.n)});
+    setAnswer(W);
     $("why").innerHTML=window.t("why_wi_"+W,{t:sceneT,r:real});
   }else{
-    $("answer").textContent=window.t(L==="cold"?"yes":"no");
+    setAnswer(L);
     $("why").innerHTML=c.north?window.t("why_north",{c:esc2(c.n),t:t}):window.t("why_"+L,{c:esc2(c.n),t:t});
   }
   if(liveUpdated)liveDate=new Date(liveUpdated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
@@ -722,7 +734,7 @@ const PAL={warm:{"--sky1":"#ffd27a","--sky2":"#8fd3ef","--ground":"#7cb342","--i
 function realAnswer(){
   if(!live||liveNote==="map_sample")return null;
   const c=shownCity();const t=Math.round(c.min);
-  return {yes:t<=FALL&&!c.north,c:c.sn||c.n,t:t,city:!!(selCity||zipPlace)};
+  return {yes:t<=FALL&&!c.north,notyet:!c.north&&t>FALL&&t<=CHILLY,c:c.sn||c.n,t:t,city:!!(selCity||zipPlace)};
 }
 /* The page's own cartoon scene, frozen in the YES (fallen) or NO (on the branch) pose */
 function sceneImage(yes,t){
@@ -762,11 +774,13 @@ async function makeShareImage(a){
   g.textBaseline="alphabetic";g.fillStyle=ink;
   g.font='400 58px "Archivo Black", sans-serif';
   wrap(g,window.t("share_q"),M,138,W-2*M,66);
-  g.fillStyle=a.yes?"#2f7fc0":"#2f7d32";
-  g.font='400 270px "Archivo Black", sans-serif';
-  g.fillText(window.t(a.yes?"yes":"no"),M-8,420);
+  g.fillStyle=a.yes?"#2f7fc0":a.notyet?"#b86e00":"#2f7d32";
+  const word=window.t(a.yes?"yes":a.notyet?"notyet":"no");let bs=270;
+  g.font=`400 ${bs}px "Archivo Black", sans-serif`;
+  while(g.measureText(word).width>W-2*M+8&&bs>120){bs-=10;g.font=`400 ${bs}px "Archivo Black", sans-serif`;}
+  g.fillText(word,M-8,420);
   g.fillStyle=ink;g.font='700 46px Archivo, sans-serif';
-  const y=wrap(g,window.t(a.yes?"share_line_yes":a.city?"share_line_no_city":"share_line_no",{c:a.c}),M,500,W-2*M,54);
+  const y=wrap(g,window.t(a.yes?"share_line_yes":a.notyet?"share_line_notyet":a.city?"share_line_no_city":"share_line_no",{c:a.c}),M,500,W-2*M,54);
   g.fillStyle=soft;g.font='400 42px Archivo, sans-serif';
   g.fillText(window.t(a.yes?"share_temp_yes":a.city?"share_temp_city":"share_temp_no",{c:a.c,t:a.t}),M,y+58);
   const im=await sceneImage(a.yes,a.t);
@@ -795,7 +809,7 @@ async function openPanel(a,blob,keepFocus){
   if(shareURL)URL.revokeObjectURL(shareURL);
   shareURL=URL.createObjectURL(blob);
   $("shareImg").src=shareURL;$("shareDl").href=shareURL;
-  $("shareImg").alt=window.t("share_alt",{a:window.t(a.yes?"yes":"no"),l:window.t(a.yes?"share_line_yes":a.city?"share_line_no_city":"share_line_no",{c:a.c}),m:window.t(a.yes?"share_temp_yes":a.city?"share_temp_city":"share_temp_no",{c:a.c,t:a.t})});
+  $("shareImg").alt=window.t("share_alt",{a:window.t(a.yes?"yes":a.notyet?"notyet":"no"),l:window.t(a.yes?"share_line_yes":a.notyet?"share_line_notyet":a.city?"share_line_no_city":"share_line_no",{c:a.c}),m:window.t(a.yes?"share_temp_yes":a.city?"share_temp_city":"share_temp_no",{c:a.c,t:a.t})});
   $("shareText").value=shareText(a);$("shareMsg").textContent="";
   $("sharePanel").hidden=false;if(!keepFocus)$("shareH").focus();
 }

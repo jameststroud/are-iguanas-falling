@@ -84,7 +84,7 @@
   const ig = document.getElementById("ig"), scene = document.getElementById("scene"), tilt = ig.querySelector(".tilt");
   const slider = document.getElementById("temp"), tval = document.getElementById("tval");
   const ans = document.getElementById("answer"), say = document.getElementById("say"), mq = document.getElementById("marquee");
-  const FALL_AT = 44, SLUG_AT = 55, BACK_AT = 50;
+  const FALL_AT = 44, SLUG_AT = 60, BACK_AT = 50;   // SLUG_AT matches the main site (45-60°F: NOT YET.)
   let state = "perched", busy = false, snowTimer = null, sweep = null;
 
   function place() {

@@ -318,7 +318,12 @@ window.I18N = {
     why_wi_warm: "What if it's <b>{t}°F</b>? The iguanas would be fine. Tonight's real forecast: {r}.",
     wi_real: "{a}, {t}°F in {c}",
     yes_word: "YES",
-    no_word: "NO"
+    no_word: "NO",
+
+    /* Third answer for chilly nights (45-55°F) */
+    notyet: "NOT YET.",
+    notyet_word: "NOT YET",
+    share_line_notyet: "Sluggish iguanas, but hanging on"
   },
 
   es: {
@@ -636,7 +641,12 @@ window.I18N = {
     why_wi_warm: "¿Y si hace <b>{t}°F</b>? Las iguanas estarían bien. Pronóstico real de esta noche: {r}.",
     wi_real: "{a}, {t}°F en {c}",
     yes_word: "SÍ",
-    no_word: "NO"
+    no_word: "NO",
+
+    /* Third answer for chilly nights (45-55°F) */
+    notyet: "TODAVÍA NO.",
+    notyet_word: "TODAVÍA NO",
+    share_line_notyet: "Iguanas lentas, pero aguantando"
   }
 };
 
