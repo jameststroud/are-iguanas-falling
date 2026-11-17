@@ -196,10 +196,18 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
 .sharepanel textarea{width:100%;font:15px/1.4 Archivo,sans-serif;margin-top:12px;padding:8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--ink);resize:vertical}
 .sharemsg{font-weight:700;color:var(--soft);min-height:1.5em;margin:10px 0 0!important}
 @media(max-width:520px){.sharepanel{grid-template-columns:minmax(0,1fr)}.sharepanel img{max-width:240px}}
-/* Desktop: map beside the animation, what-if box full width underneath.
-   Narrow screens: one column in page order: animation, what-if box, map. */
+/* Desktop: the animation sits in the header beside the answer, mirrored so the iguana faces it;
+   the what-if box and the map share the row below. Narrow screens: one column, animation under
+   the answer (not mirrored), then the what-if box, then the map. */
+header.top .wrap.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);column-gap:clamp(24px,3vw,48px);align-items:start}
+header.top .wrap.hero>*{grid-column:1}
+header.top .wrap.hero>#scenePanel{grid-column:2;grid-row:1 / span 9;align-self:center}
+.scene.mirrored{transform:scaleX(-1)}
+.scene.mirrored .unflip{transform-box:fill-box;transform-origin:50% 50%;transform:scaleX(-1)}
+.stage{grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);align-items:start}
+.stage>.ctrl{grid-column:1;grid-row:1;grid-template-columns:minmax(0,1fr) auto}
+.stage>.ctrl label{grid-column:1/-1}
 .stage>.mappanel{grid-column:2;grid-row:1}
-.stage>.ctrl{grid-column:1/-1;grid-row:2}
 @media(max-width:820px){.stage,.sci,.report{grid-template-columns:minmax(0,1fr)}.stage>.mappanel,.stage>.ctrl{grid-column:auto;grid-row:auto}}
 @media(max-width:600px){.ctrl{grid-template-columns:minmax(0,1fr) auto}.ctrl label{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){.tail,.head,.dew,body.cold .flake{animation:none!important}
@@ -286,7 +294,7 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
             <path id="crest" fill="var(--ig2)"/>
             <g class="frost"><path id="crestFrost" fill="#fff" opacity=".85"/><path d="M-56,-10 C-30,-22 30,-24 60,-12" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 5" fill="none"/><path d="M-60,-8 C-120,-10 -170,-2 -220,18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 6" fill="none"/></g>
             <g class="ice" fill="#eef9ff" stroke="#8fbfdc" stroke-width=".8"><path d="M-28,19 L-25,31 L-22,19Z"/><path d="M-6,21 L-2,35 L2,21Z"/><path d="M20,20 L23,30 L26,20Z"/><path d="M47,15 L50,24 L53,14Z"/><path d="M-118,9 L-115,19 L-112,8Z"/><path d="M-170,9 L-167,17 L-164,8Z"/></g>
-            <text class="brrr" x="78" y="-46" font-family="'Archivo Black',Archivo,sans-serif" font-size="17" fill="#fff" stroke="#3a6a8e" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">BRRR!</text>
+            <g class="unflip"><text class="brrr" x="78" y="-46" font-family="'Archivo Black',Archivo,sans-serif" font-size="17" fill="#fff" stroke="#3a6a8e" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">BRRR!</text></g>
             <g class="head">
               <path class="dew" d="M64,10 C70,32 88,36 98,12 Z" fill="var(--belly)" stroke="var(--ig2)" stroke-width="1.5"/>
               <path d="M50,-15 C76,-26 102,-22 114,-9 C121,-2 118,7 108,9 C90,12 70,14 50,14 Z" fill="var(--ig)"/>
@@ -792,10 +800,10 @@ window.onLangChange(()=>{drawScale();if(live)drawMap(live);});
 window.onLangChange(words);
 window.applyI18n();
 $("why").textContent=window.t("checking");
-/* Narrow screens: the cartoon sits right under the big YES/NO; wider screens: back in the stage */
-{const mq=matchMedia("(max-width:820px)"),panel=$("scenePanel");
- const place=()=>{if(mq.matches){if(panel.parentNode!==$("sceneSlot"))$("sceneSlot").appendChild(panel);}
-   else if(panel.parentNode!==$("stage"))$("stage").insertBefore(panel,$("stage").firstChild);};
+/* Narrow screens: the cartoon sits right under the big YES/NO; wider screens: beside it in the header, mirrored */
+{const mq=matchMedia("(max-width:820px)"),panel=$("scenePanel"),hero=document.querySelector("header.top .wrap"),scene=panel.querySelector(".scene");
+ const place=()=>{if(mq.matches){hero.classList.remove("hero");scene.classList.remove("mirrored");if(panel.parentNode!==$("sceneSlot"))$("sceneSlot").appendChild(panel);}
+   else{hero.classList.add("hero");scene.classList.add("mirrored");if(panel.parentNode!==hero)hero.appendChild(panel);}};
  place();mq.addEventListener("change",place);}
 drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70,false,true);
 loadFalls().then(load).then(()=>{try{const z=new URLSearchParams(location.search).get("zip");if(z){$("zip").value=z.replace(/\D/g,"").slice(0,5);lookupZip($("zip").value);}}catch(e){}});
