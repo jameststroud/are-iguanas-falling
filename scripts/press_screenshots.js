@@ -14,7 +14,12 @@ const WARM = [66, 67, 65, 63, 62, 72, 60, 58];
   const browser = await chromium.launch();
   for (const state of ["yes", "no"]) {
     const s = JSON.parse(JSON.stringify(real));
+    const old = s.cities.map(c => c.min);
     s.cities.forEach((c, i) => { c.min = (state === "yes" ? COLD : WARM)[i]; });
+    if (s.grid) { // shift the map grid by the same average amount as the cities
+      const off = old.reduce((a, b, i) => a + b - s.cities[i].min, 0) / old.length;
+      s.grid = s.grid.map(p => ({ ...p, min: p.min - off }));
+    }
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 1180 }, deviceScaleFactor: 2, colorScheme: "light" });
     await ctx.addInitScript(() => { try { localStorage.setItem("iguana-lang", "en"); } catch (e) {} });
     const page = await ctx.newPage();

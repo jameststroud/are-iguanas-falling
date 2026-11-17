@@ -49,6 +49,33 @@ CITIES = [
 ]
 
 
+# Forecast points for the temperature-coloured map: a 0.35° grid of points inside the
+# Florida outline used in index.html, plus four along the Keys. Generated once; the
+# page interpolates between them.
+GRID = [
+    (25.2, -80.95), (25.55, -80.95), (25.55, -80.6), (25.9, -81.65), (25.9, -81.3), (25.9, -80.95),
+    (25.9, -80.6), (25.9, -80.25), (26.25, -81.65), (26.25, -81.3), (26.25, -80.95), (26.25, -80.6),
+    (26.25, -80.25), (26.6, -82.0), (26.6, -81.65), (26.6, -81.3), (26.6, -80.95), (26.6, -80.6),
+    (26.6, -80.25), (26.95, -82.35), (26.95, -82.0), (26.95, -81.65), (26.95, -81.3), (26.95, -80.95),
+    (26.95, -80.6), (26.95, -80.25), (27.3, -82.35), (27.3, -82.0), (27.3, -81.65), (27.3, -81.3),
+    (27.3, -80.95), (27.3, -80.6), (27.3, -80.25), (27.65, -82.35), (27.65, -82.0), (27.65, -81.65),
+    (27.65, -81.3), (27.65, -80.95), (27.65, -80.6), (28.0, -82.7), (28.0, -82.35), (28.0, -82.0),
+    (28.0, -81.65), (28.0, -81.3), (28.0, -80.95), (28.0, -80.6), (28.35, -82.7), (28.35, -82.35),
+    (28.35, -82.0), (28.35, -81.65), (28.35, -81.3), (28.35, -80.95), (28.35, -80.6), (28.7, -82.35),
+    (28.7, -82.0), (28.7, -81.65), (28.7, -81.3), (28.7, -80.95), (29.05, -82.7), (29.05, -82.35),
+    (29.05, -82.0), (29.05, -81.65), (29.05, -81.3), (29.05, -80.95), (29.4, -83.05), (29.4, -82.7),
+    (29.4, -82.35), (29.4, -82.0), (29.4, -81.65), (29.4, -81.3), (29.75, -85.15), (29.75, -83.4),
+    (29.75, -83.05), (29.75, -82.7), (29.75, -82.35), (29.75, -82.0), (29.75, -81.65), (29.75, -81.3),
+    (30.1, -85.5), (30.1, -85.15), (30.1, -84.8), (30.1, -84.45), (30.1, -84.1), (30.1, -83.75),
+    (30.1, -83.4), (30.1, -83.05), (30.1, -82.7), (30.1, -82.35), (30.1, -82.0), (30.1, -81.65),
+    (30.45, -87.25), (30.45, -86.9), (30.45, -86.55), (30.45, -86.2), (30.45, -85.85), (30.45, -85.5),
+    (30.45, -85.15), (30.45, -84.8), (30.45, -84.45), (30.45, -84.1), (30.45, -83.75), (30.45, -83.4),
+    (30.45, -83.05), (30.45, -82.7), (30.45, -82.35), (30.45, -82.0), (30.45, -81.65), (30.8, -87.25),
+    (30.8, -86.9), (30.8, -86.55), (30.8, -86.2), (30.8, -85.85), (30.8, -85.5), (30.8, -85.15),
+    (24.56, -81.78), (24.66, -81.45), (24.72, -81.05), (24.92, -80.63),
+]
+
+
 def get_json(url, timeout=30):
     req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
     with urllib.request.urlopen(req, timeout=timeout) as r:
@@ -80,6 +107,26 @@ def fetch_forecast():
             "min": min(lows),
         })
     return cities
+
+
+def fetch_grid():
+    """Overnight low at every GRID point (same window as the cities: next two nights)."""
+    out = []
+    for i in range(0, len(GRID), 100):  # Open-Meteo takes many points per call; 2 calls
+        chunk = GRID[i:i + 100]
+        url = (
+            "https://api.open-meteo.com/v1/forecast"
+            f"?latitude={','.join(str(p[0]) for p in chunk)}"
+            f"&longitude={','.join(str(p[1]) for p in chunk)}"
+            "&daily=temperature_2m_min&temperature_unit=fahrenheit"
+            "&timezone=America%2FNew_York&forecast_days=2"
+        )
+        data = get_json(url)
+        if isinstance(data, dict):
+            data = [data]
+        for (lat, lon), loc in zip(chunk, data):
+            out.append({"lat": lat, "lon": lon, "min": round(min(loc["daily"]["temperature_2m_min"]), 1)})
+    return out
 
 
 def season_start(now):
@@ -267,6 +314,14 @@ def main():
         "answer": answer,
         "coldest": {"n": coldest["n"], "min": coldest["min"]},
     })
+
+    # Temperature-coloured map. If this fails, drop the old grid so the page falls
+    # back to colouring from the eight cities rather than showing a stale grid.
+    try:
+        status["grid"] = fetch_grid()
+    except Exception as e:  # never let the map grid break the forecast
+        status.pop("grid", None)
+        print(f"Map grid skipped: {e}")
 
     # Fallen-iguana reports. The counter on the page and the map markers both come
     # from this one fetch, so they always agree.

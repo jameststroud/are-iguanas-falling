@@ -263,7 +263,16 @@ window.I18N = {
     news_by: "Article by James Stroud",
     news_covers: "Covers the 2020 study",
     news_feature: "Feature",
-    news_en: "(in English)"
+    news_en: "(in English)",
+
+    /* Temperature-coloured map (home page) */
+    range_l1: "Green iguana",
+    range_l2: "range limit",
+    legend_range: "Approximate northern range limit of green iguanas, inferred from iNaturalist observations",
+    map_how: "Colors show the forecast overnight low, interpolated between {n} forecast points. Blue means 44°F or below.",
+    map_how_cities: "Colors show the forecast overnight low, interpolated between the 8 cities. Blue means 44°F or below.",
+    scale_aria: "Color scale for the overnight low: blue at 44°F and below, then pale cream at 45°F warming to deep orange at 80°F",
+    scale_unit: "°F"
   },
 
   es: {
@@ -526,7 +535,16 @@ window.I18N = {
     news_by: "Artículo de James Stroud",
     news_covers: "Cubre el estudio de 2020",
     news_feature: "Reportaje",
-    news_en: "(en inglés)"
+    news_en: "(en inglés)",
+
+    /* Temperature-coloured map (home page) */
+    range_l1: "Límite de la",
+    range_l2: "iguana verde",
+    legend_range: "Límite norte aproximado de la iguana verde, inferido de observaciones en iNaturalist",
+    map_how: "Los colores muestran la mínima nocturna pronosticada, interpolada entre {n} puntos de pronóstico. Azul significa 44°F o menos.",
+    map_how_cities: "Los colores muestran la mínima nocturna pronosticada, interpolada entre las 8 ciudades. Azul significa 44°F o menos.",
+    scale_aria: "Escala de color de la mínima nocturna: azul a 44°F o menos, luego crema pálido a 45°F que se calienta hasta naranja intenso a 80°F",
+    scale_unit: "°F"
   }
 };
 

@@ -52,6 +52,17 @@ From the Stroud Lab at Georgia Tech.
 - Downloads list: the `FILES` array near the bottom of `press.html`.
 - `make_og.py` also writes the logo, the transparent iguana and copies of the link cards into `assets/press/`.
 
+## Temperature map
+
+The Florida map on the home page is coloured by the forecast overnight low. Each hour the job also fetches the low for 118 forecast points across the state (`GRID` in `scripts/update_forecast.py`, 2 extra Open-Meteo calls) and stores them as `grid` in `status.json`. The page interpolates between those points (inverse-distance weighting), clips the result to the Florida outline, and draws:
+
+- **44°F and below** as one blue class (darker = colder), outlined in white;
+- **above 44°F** as a ramp from pale cream (45°F) to deep orange (80°F), with a vertical scale bar to the right of the map;
+- the **approximate northern range limit of green iguanas** as a dashed line (`RANGE` in `index.html`), traced from iNaturalist observations;
+- the 8 cities with their lows, and the date in the top-right corner.
+
+If the grid fetch fails, the page colours the map from the 8 cities instead. Colours are set in `COLD_STOPS` and `WARM_STOPS` in `index.html`.
+
 ## Map of reported falls
 
 Each hour the job fetches this winter's observations (since 1 November) from the iNaturalist project, 200 per page with a 1-second pause between pages, and writes `falls.json`. Obscured and private records (by the observer or because of the taxon) are never written with coordinates; they only add to the count. Public coordinates are rounded to 2 decimals (about 1 km).

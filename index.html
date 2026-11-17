@@ -40,9 +40,19 @@ body.chilly{--sky1:#ffe9b8;--sky2:#a9cfe2;--ig:#7fae55;--ig2:#456f30;--belly:#cb
 body.cold .big{color:var(--ice)}
 .stage{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:clamp(16px,2.5vw,32px);align-items:stretch}
 .scene{display:block;width:100%;height:auto;aspect-ratio:600/480}
-.mapbox{padding:14px 14px 6px}
+.mapbox{padding:14px 14px 6px;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:stretch}
 .mapbox svg{display:block;width:100%;height:auto}
 .mapwrap{position:relative}
+.mapdate{position:absolute;top:8px;right:10px;font:700 14px Archivo,sans-serif;color:var(--ink);background:color-mix(in srgb,var(--card) 82%,transparent);border-radius:8px;padding:2px 8px;pointer-events:none}
+.scale{display:grid;grid-template-columns:14px auto;gap:6px;padding:4px 0 6px}
+.scale .bar{border-radius:5px;border:1px solid var(--line)}
+.scale .lab{position:relative;font:600 12px Archivo,sans-serif;color:var(--soft);min-width:2.6em}
+.scale .lab span{position:absolute;left:0;transform:translateY(-50%);white-space:nowrap}
+.scale .lab .k{font-weight:700;color:var(--ink)}
+.coast{fill:none;stroke:light-dark(#8d7d55,#a9c4b3);stroke-width:1.3}
+.range{fill:none;stroke:var(--ink);stroke-width:2.6;stroke-dasharray:7 5;stroke-linecap:round}
+.range-halo{fill:none;stroke:var(--card);stroke-width:6;stroke-linecap:round;opacity:.85}
+.rlab{font:700 12px Archivo,sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:3px;stroke-linejoin:round}
 .pin{position:absolute;width:44px;height:44px;margin:-22px 0 0 -22px;padding:0;border:0;border-radius:50%;background:transparent;display:grid;place-items:center;min-height:0;cursor:pointer}
 .pin::before{content:"";width:11px;height:11px;background:var(--ink);border:2px solid var(--card);transform:rotate(45deg);box-shadow:0 0 0 1px var(--ink)}
 .pin[aria-expanded=true]::before{box-shadow:0 0 0 1px var(--ink),0 0 0 5px var(--hot)}
@@ -55,13 +65,15 @@ body.cold .big{color:var(--ice)}
 .legend{display:flex;flex-wrap:wrap;gap:4px 18px;margin:0;padding:0 16px 6px;font-size:14px;font-weight:600;color:var(--soft);list-style:none}
 .legend li{display:flex;align-items:center;gap:7px}
 .legend li[hidden]{display:none}
-.legend .dot{width:12px;height:12px;border-radius:50%;background:#ff7a2f;border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
-body.cold .legend .dot{background:#3d8fd1}
+.legend .dot{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
+.legend .dash{flex:none;width:24px;height:0;border-top:3px dashed var(--ink)}
+.legend .dot,.legend .dia{flex:none}
+@media(max-width:600px){.mapdate{font-size:11px;top:4px;right:4px;padding:1px 6px}.scale{grid-template-columns:10px auto;gap:4px}.scale .lab{font-size:11px}}
 .legend .dia{width:10px;height:10px;background:var(--ink);transform:rotate(45deg);margin:0 1px}
 .hidnote{font-size:13px;color:var(--soft);padding:0 16px 14px;margin:0}
 .cap{font-size:14px;color:var(--soft);padding:0 16px 14px;margin:0}
 .land{fill:light-dark(#f3e6c4,#2a3a31);stroke:light-dark(#c9b78a,#4b6455);stroke-width:1.5}
-.city text{font:600 13px Archivo,sans-serif;fill:var(--ink)}
+.city text{font:600 13px Archivo,sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:3.5px;stroke-linejoin:round}
 .city .t{font-weight:700}
 .sea{fill:light-dark(#d6eef7,#13303b)}
 .ctrl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:16px 22px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px 22px}
@@ -268,18 +280,23 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
     <div class="panel">
       <div class="mapbox"><div class="mapwrap" id="mapwrap">
         <svg id="map" viewBox="-10 0 545 400" role="img" data-i18n-aria="map_aria" aria-label="Map of Florida with forecast overnight lows"></svg>
+        <div class="mapdate" id="mapdate"></div>
         <div id="pins"></div>
         <div class="pop" id="pop" hidden role="dialog" aria-labelledby="popH">
           <button type="button" class="x" id="popX" data-i18n-aria="fall_close" aria-label="Close">×</button>
           <b id="popH" data-i18n="fall_pop_h">Reported fall</b><span id="popD"></span><br>
           <a id="popA" href="#" data-i18n="fall_view">See it on iNaturalist</a>
         </div>
-      </div></div>
+      </div>
+      <div class="scale" role="img" data-i18n-aria="scale_aria" aria-label="Color scale for the overnight low"><div class="bar" id="scaleBar"></div><div class="lab" id="scaleLab"></div></div>
+      </div>
       <ul class="legend" id="legend">
         <li><span class="dot" aria-hidden="true"></span><span data-i18n="legend_low">Forecast low</span></li>
+        <li><span class="dash" aria-hidden="true"></span><span data-i18n="legend_range">Approximate northern range limit of green iguanas, inferred from iNaturalist observations</span></li>
         <li id="legFall" hidden><span class="dia" aria-hidden="true"></span><span data-i18n="legend_fall">Reported fall</span></li>
       </ul>
       <p class="cap" id="mapcap"></p>
+      <p class="cap" id="maphow" style="margin-top:-8px"></p>
       <p class="hidnote" id="hidnote" hidden></p>
     </div>
   </div>
@@ -367,7 +384,7 @@ let d="";for(let x=-48;x<=60;x+=9){const y=-21*Math.sqrt(Math.max(0,1-(x/66)**2)
 $("crest").setAttribute("d",d);$("crestFrost").setAttribute("d",d);
 $("flakes").innerHTML=Array.from({length:26},(_,i)=>`<circle cx="${(i*83)%590+5}" cy="${(i*47)%380+10}" r="${2+i%3}"/>`).join("");
 
-let lastAns=null,live=null,liveNote="map_plain",liveDate="",lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
+let lastAns=null,live=null,liveNote="map_plain",liveDate="",liveUpdated=null,grid=null,lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
 /* Restart a CSS sequence: "no" = sunglasses land, "yes" = zoom, shiver, fall */
 function runSeq(kind){
   const b=document.body,had=b.classList.contains("seq-no");
@@ -385,18 +402,65 @@ function setScene(t,replay,quiet){
   $("tv").textContent=t+"°F";$("t").value=t;
   $("st").textContent=window.t("st_"+L);
 }
+/* ===== Temperature map =====
+   Land is coloured by the forecast overnight low, interpolated (inverse-distance weighting
+   in map space) between the hourly job's forecast grid in status.json, or between the
+   8 cities if the grid is missing. 44°F and below is one blue class (darker = colder);
+   above that a sequential ramp runs from pale cream at 45°F to deep orange at 80°F. */
+const COLD_STOPS=[[30,"#163f78"],[37,"#2563ab"],[44,"#3f86d1"]];
+const WARM_STOPS=[[45,"#f4eedf"],[50,"#f6dfb0"],[55,"#f4c77c"],[60,"#f1aa58"],[65,"#ea8a3f"],[72,"#d96a2c"],[80,"#b44a1c"]];
+const hex2=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16));
+function ramp(st,t){if(t<=st[0][0])return hex2(st[0][1]);
+  for(let i=1;i<st.length;i++)if(t<=st[i][0]){const[a,ca]=st[i-1],[b,cb]=st[i],f=(t-a)/(b-a),A=hex2(ca),B=hex2(cb);return A.map((v,k)=>Math.round(v+(B[k]-v)*f));}
+  return hex2(st[st.length-1][1]);}
+const tcol=t=>Math.round(t)<=FALL?ramp(COLD_STOPS,t):ramp(WARM_STOPS,Math.max(45,t));
+function idw(pts,x,y){let n=0,d=0;for(const p of pts){const dx=x-p.x,dy=y-p.y,r2=dx*dx+dy*dy;if(r2<1e-6)return p.t;const w=1/(r2*r2/400+r2);n+=w*p.t;d+=w;}return n/d;}
+/* Approximate northern limit of green iguanas, traced on iNaturalist observations (lat, lon) */
+const RANGE=[[28.14,-83.13],[28.14,-82.92],[28.16,-82.71],[28.21,-82.5],[28.27,-82.29],[28.35,-82.08],[28.49,-81.87],[28.66,-81.66],[28.83,-81.44],[28.98,-81.23],[29.12,-81.02],[29.22,-80.81],[29.29,-80.6]];
+function tempImage(pts){
+  const S=2,W=545*S,H=400*S,step=3,cols=Math.ceil(W/step)+1,rows=Math.ceil(H/step)+1,T=new Float32Array(cols*rows);
+  for(let j=0;j<rows;j++)for(let i=0;i<cols;i++)T[j*cols+i]=idw(pts,(i*step)/S-10,(j*step)/S);
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d"),img=g.createImageData(W,H),cold=new Uint8Array(W*H);
+  for(let y=0;y<H;y++){const j=Math.floor(y/step),fy=y/step-j;
+    for(let x=0;x<W;x++){const i=Math.floor(x/step),fx=x/step-i,a=j*cols+i;
+      const t=T[a]*(1-fx)*(1-fy)+T[a+1]*fx*(1-fy)+T[a+cols]*(1-fx)*fy+T[a+cols+1]*fx*fy;
+      const c=tcol(t),k=(y*W+x)*4;img.data[k]=c[0];img.data[k+1]=c[1];img.data[k+2]=c[2];img.data[k+3]=255;cold[y*W+x]=Math.round(t)<=FALL?1:0;}}
+  for(let y=1;y<H-1;y++)for(let x=1;x<W-1;x++){const a=cold[y*W+x];if(a!==cold[y*W+x-1]||a!==cold[(y-1)*W+x])
+    for(const[dx,dy]of[[0,0],[1,0],[0,1],[-1,0],[0,-1]]){const k=((y+dy)*W+x+dx)*4;img.data[k]=img.data[k+1]=img.data[k+2]=255;}}
+  g.putImageData(img,0,0);return cv.toDataURL();
+}
+function drawScale(){
+  const lo=30,hi=80,pct=t=>((hi-t)/(hi-lo)*100).toFixed(2)+"%",st=[];
+  for(let t=hi;t>=lo;t-=1){const c=tcol(t===45?45:t);st.push(`rgb(${c}) ${pct(t+0.5)} ${pct(t-0.5)}`);}
+  $("scaleBar").style.background=`linear-gradient(to bottom,${st.join(",")})`;
+  $("scaleLab").innerHTML=`<span style="top:0;transform:none">${window.t("scale_unit")}</span>`+[70,60,50,44,37].map(t=>`<span class="${t===FALL?"k":""}" style="top:${pct(t)}">${t}°</span>`).join("");
+}
+function drawDate(){
+  const d=liveUpdated?new Date(liveUpdated):new Date();
+  try{$("mapdate").textContent=d.toLocaleDateString(window.getLang()==="es"?"es-US":"en-US",{timeZone:"America/New_York",weekday:"short",month:"short",day:"numeric",year:"numeric"});}catch(e){$("mapdate").textContent="";}
+}
 function drawMap(rows){
-  const pins=rows.map(c=>{const[x,y]=P(c.lon,c.lat);const L=level(c.min);const r=c.side==="r";
-    return `<g class="city"><circle cx="${x}" cy="${y}" r="7" fill="${col[L]}" stroke="#fff" stroke-width="2"/>
-    <text x="${r?x+12:x-12}" y="${y+4.5}" text-anchor="${r?"start":"end"}">${c.n} <tspan class="t">${Math.round(c.min)}°</tspan></text></g>`}).join("");
-  $("map").innerHTML=`<rect x="-10" width="545" height="400" class="sea" rx="12"/><path d="${FL}" class="land"/>`+
-    keys.map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="2" class="land"/>`).join("")+pins;
+  const src=(grid&&grid.length?grid:rows).map(p=>{const[x,y]=P(p.lon,p.lat);return{x,y,t:p.min};});
+  const url=tempImage(src);
+  const pins=rows.map(c=>{const[x,y]=P(c.lon,c.lat);const r=c.side==="r";
+    return `<g class="city"><circle cx="${x}" cy="${y}" r="5.5" fill="var(--ink)" stroke="#fff" stroke-width="2"/>
+    <text x="${r?x+11:x-11}" y="${y+4.5}" text-anchor="${r?"start":"end"}">${c.n} <tspan class="t">${Math.round(c.min)}°</tspan></text></g>`}).join("");
+  const rp=RANGE.map(([la,lo])=>P(lo,la)),rd="M"+rp.map(p=>p.map(v=>v.toFixed(1)).join(",")).join("L"),[rx,ry]=rp[0];
+  $("map").innerHTML=`<defs><clipPath id="flclip"><path d="${FL}"/>${keys.map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="2"/>`).join("")}</clipPath></defs>
+    <rect x="-10" width="545" height="400" class="sea" rx="12"/>
+    <image href="${url}" x="-10" y="0" width="545" height="400" preserveAspectRatio="none" clip-path="url(#flclip)"/>
+    <path d="${FL}" class="coast"/>${keys.map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="2" class="coast"/>`).join("")}
+    <path d="${rd}" class="range-halo"/><path d="${rd}" class="range"/>
+    <text class="rlab" text-anchor="end" x="${rx-6}" y="${ry-24}"><tspan x="${rx-6}">${window.t("range_l1")}</tspan><tspan x="${rx-6}" dy="14">${window.t("range_l2")}</tspan></text>`+pins;
+  $("maphow").textContent=grid&&grid.length?window.t("map_how",{n:grid.length}):window.t("map_how_cities");
+  drawDate();
 }
 function words(){
   if(!live)return;
   const c=live.reduce((a,b)=>b.min<a.min?b:a);const t=Math.round(c.min);const L=level(t);
   $("answer").textContent=window.t(L==="cold"?"yes":"no");
   $("why").innerHTML=window.t("why_"+L,{c:c.n,t:t});
+  if(liveUpdated)liveDate=new Date(liveUpdated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
   $("mapcap").textContent=window.t(liveNote,{d:liveDate});
   $("st").textContent=window.t("st_"+level(sceneT));
   if(falls!==null){$("count").hidden=false;$("countN").textContent=falls;$("countL").textContent=window.t(falls===1?"count_one":"count_many");}
@@ -447,7 +511,8 @@ async function loadFalls(){
 async function load(){
   try{const r=await fetch("status.json",{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
     if(fallPts===null&&j.falls&&typeof j.falls.count==="number")falls=j.falls.count;
-    liveDate=new Date(j.updated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
+    liveUpdated=j.updated;liveDate=new Date(j.updated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
+    if(Array.isArray(j.grid))grid=j.grid.filter(p=>isFinite(p.lat)&&isFinite(p.lon)&&isFinite(p.min));
     show(j.cities.map((c,i)=>({...CITIES[i],...c})),"map_live");return}catch(e){}
   try{const q=`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c.lat)}&longitude=${CITIES.map(c=>c.lon)}&daily=temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=2`;
     const r=await fetch(q);if(!r.ok)throw 0;const j=await r.json();
@@ -552,6 +617,7 @@ window.onLangChange(async()=>{const a=realAnswer();if(a&&!$("sharePanel").hidden
 $("t").addEventListener("input",e=>setScene(+e.target.value));
 $("cold").addEventListener("click",()=>setScene(38,true));
 $("live").addEventListener("click",()=>{if(live)show(live);});
+window.onLangChange(()=>{drawScale();if(live)drawMap(live);});
 window.onLangChange(words);
 window.applyI18n();
 $("why").textContent=window.t("checking");
