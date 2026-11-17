@@ -21,6 +21,8 @@
   #tree { position: absolute; left: 3.5%; bottom: 0; height: 100%; width: auto; transition: filter 1.5s; user-select: none; -webkit-user-drag: none; }
   #scene.chill #tree { filter: saturate(0.6) brightness(0.97) hue-rotate(10deg); }
   #ig { position: absolute; transform-origin: 50% 50%; cursor: pointer; will-change: transform; }
+  .ghost { position: absolute; transform-origin: 50% 50%; pointer-events: none; mix-blend-mode: multiply; will-change: transform, opacity; }
+  .ghost img { display: block; width: 100%; height: auto; }
   #ig .tilt { transform-origin: 50% 80%; }
   #ig img { display: block; width: 100%; height: auto; transform-origin: 70% 100%; user-select: none; -webkit-user-drag: none; transition: filter 1.2s;
             filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.35)); }
@@ -127,11 +129,27 @@
     scene.classList.toggle("chill", t <= SLUG_AT);
     if (state === "perched" && !busy) ig.className = t <= SLUG_AT ? "slow" : "bob";
   }
+  /* Added for areiguanasfallinginflorida.com: a rainbow trail of see-through iguana copies that follow
+     the fall a split second behind, nearest green, then yellow, orange, red, magenta, farthest blue */
+  function rainbow(frames, dur) {
+    if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    [110, 52, 28, 0, 305, 215].forEach((hue, i) => {
+      const g = ig.cloneNode(true), delay = (i + 1) * 90;
+      g.removeAttribute("id"); g.removeAttribute("title"); g.className = "ghost"; g.setAttribute("aria-hidden", "true");
+      const im = g.querySelector("img"); im.alt = "";
+      im.style.filter = `grayscale(1) sepia(1) saturate(9) hue-rotate(${hue - 38}deg) brightness(1.08)`;
+      scene.insertBefore(g, ig);
+      g.animate(frames, { duration: dur, delay, fill: "forwards" });
+      const fade = g.animate([{ opacity: 0 }, { opacity: 0.55, offset: 0.06 }, { opacity: 0.5, offset: 0.8 }, { opacity: 0 }],
+                             { duration: dur + delay, fill: "forwards" });
+      fade.finished.then(() => g.remove(), () => g.remove());
+    });
+  }
   async function fall() {
     if (busy || state !== "perched") return;
     busy = true; ig.className = "cold"; snow(true);
     const [dx, dy] = px(L.land.cx, L.land.cy), r = L.land.rot;
-    const anim = ig.animate([
+    const frames = [
       { transform: "translate(0,0) rotate(0deg)" },
       { transform: "translate(-4px,0) rotate(-1deg)", offset: 0.06 }, { transform: "translate(4px,0) rotate(1deg)", offset: 0.12 },
       { transform: "translate(-4px,0) rotate(-1deg)", offset: 0.18 }, { transform: "translate(4px,0) rotate(1deg)", offset: 0.24 },
@@ -139,7 +157,9 @@
       { transform: `translate(${dx * 0.9}px,${dy}px) rotate(${r}deg)`, offset: 0.78, easing: "ease-out" },
       { transform: `translate(${dx * 0.95}px,${dy - 40}px) rotate(${r - 18}deg)`, offset: 0.86, easing: "ease-in" },
       { transform: `translate(${dx}px,${dy}px) rotate(${r}deg)`, offset: 1 }
-    ], { duration: 2600, fill: "forwards" });
+    ];
+    const anim = ig.animate(frames, { duration: 2600, fill: "forwards" });
+    rainbow(frames, 2600);
     await anim.finished;
     state = "fallen"; busy = false; render();
     sweep = ig.animate([{ transform: `translate(${dx}px,${dy}px) rotate(${r}deg)` }, { transform: `translate(${dx}px,${dy}px) rotate(${r - 3}deg)` },
