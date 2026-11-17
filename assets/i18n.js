@@ -302,7 +302,10 @@ window.I18N = {
 
     /* ZIP code forecast: places north of the iguana range */
     why_north: "<b>{c}</b> is forecast to drop to <b>{t}°F</b>, but green iguanas don't usually live this far north, so there are none to fall.",
-    zip_ok_point: "Showing the forecast for {p}."
+    zip_ok_point: "Showing the forecast for {p}.",
+
+    /* Lab logo (footer of every page) */
+    logo_link: "The Stroud Lab: Evolutionary Ecology and Global Change Biology at Georgia Tech. Visit the lab website"
   },
 
   es: {
@@ -604,7 +607,10 @@ window.I18N = {
 
     /* ZIP code forecast: places north of the iguana range */
     why_north: "Se pronostica que <b>{c}</b> bajará a <b>{t}°F</b>, pero las iguanas verdes no suelen vivir tan al norte, así que no hay ninguna que se caiga.",
-    zip_ok_point: "Mostrando el pronóstico para {p}."
+    zip_ok_point: "Mostrando el pronóstico para {p}.",
+
+    /* Lab logo (footer of every page) */
+    logo_link: "El Stroud Lab: Ecología Evolutiva y Biología del Cambio Global en Georgia Tech. Visita el sitio web del laboratorio"
   }
 };
 
