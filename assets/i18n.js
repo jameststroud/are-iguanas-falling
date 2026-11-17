@@ -305,7 +305,12 @@ window.I18N = {
     zip_ok_point: "Showing the forecast for {p}.",
 
     /* Lab logo (footer of every page) */
-    logo_link: "The Stroud Lab: Evolutionary Ecology and Global Change Biology at Georgia Tech. Visit the lab website"
+    logo_link: "The Stroud Lab: Evolutionary Ecology and Global Change Biology at Georgia Tech. Visit the lab website",
+
+    /* Retro animation easter egg (home page, YES nights only) */
+    iykyk_btn: "arepublixchickentendersubsonsale.com style iykyk",
+    iykyk_title: "Retro falling-iguana animation",
+    iykyk_close: "Close the retro animation"
   },
 
   es: {
@@ -610,7 +615,12 @@ window.I18N = {
     zip_ok_point: "Mostrando el pronóstico para {p}.",
 
     /* Lab logo (footer of every page) */
-    logo_link: "El Stroud Lab: Ecología Evolutiva y Biología del Cambio Global en Georgia Tech. Visita el sitio web del laboratorio"
+    logo_link: "El Stroud Lab: Ecología Evolutiva y Biología del Cambio Global en Georgia Tech. Visita el sitio web del laboratorio",
+
+    /* Retro animation easter egg (home page, YES nights only) */
+    iykyk_btn: "al estilo arepublixchickentendersubsonsale.com, iykyk",
+    iykyk_title: "Animación retro de iguanas cayendo",
+    iykyk_close: "Cerrar la animación retro"
   }
 };
 
