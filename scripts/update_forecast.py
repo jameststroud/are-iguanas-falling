@@ -3,9 +3,12 @@
 Run hourly by GitHub Actions. The website reads status.json, so no matter
 how many people visit, the weather API only sees 24 requests a day.
 
-Only the Open-Meteo forecast is allowed to fail the run. Everything else
-(iNaturalist, the preview image, Bluesky) sits in its own try/except, logs
-the problem and carries on.
+Nothing is allowed to fail the run. Open-Meteo calls are retried with a
+back-off; if the forecast still can't be fetched, the last good forecast in
+status.json is kept (its "updated" time is left alone, so the page can tell
+it is stale) and a warning shows on the run in the Actions tab. Everything
+else (iNaturalist, the preview image, Bluesky) sits in its own try/except,
+logs the problem and carries on.
 
 Bluesky: when the answer flips from NO to YES (at most once every 12 hours)
 the script posts to the lab account, in English with a Spanish reply.
@@ -76,10 +79,24 @@ GRID = [
 ]
 
 
-def get_json(url, timeout=30):
-    req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
-    with urllib.request.urlopen(req, timeout=timeout) as r:
-        return json.load(r)
+def get_json(url, timeout=20, tries=1, waits=(5, 15, 30)):
+    """Fetch JSON. With tries > 1, retry timeouts and errors after a short wait."""
+    for attempt in range(tries):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})
+            with urllib.request.urlopen(req, timeout=timeout) as r:
+                return json.load(r)
+        except Exception as e:
+            if attempt == tries - 1:
+                raise
+            wait = waits[min(attempt, len(waits) - 1)]
+            print(f"Retrying in {wait}s after: {e}")
+            time.sleep(wait)
+
+
+def warn(msg):
+    """Print a warning that GitHub shows as a yellow annotation on the run."""
+    print(f"::warning::{msg}")
 
 
 def js_round(x):
@@ -95,7 +112,7 @@ def fetch_forecast():
         "&daily=temperature_2m_min&temperature_unit=fahrenheit"
         "&timezone=America%2FNew_York&forecast_days=2"
     )
-    data = get_json(url)
+    data = get_json(url, tries=4)
     cities = []
     for (name, lat, lon), loc in zip(CITIES, data):
         lows = loc["daily"]["temperature_2m_min"]
@@ -121,7 +138,7 @@ def fetch_grid():
             "&daily=temperature_2m_min&temperature_unit=fahrenheit"
             "&timezone=America%2FNew_York&forecast_days=2"
         )
-        data = get_json(url)
+        data = get_json(url, tries=3)
         if isinstance(data, dict):
             data = [data]
         for (lat, lon), loc in zip(chunk, data):
@@ -302,26 +319,36 @@ def previous_answer(previous):
 def main():
     now = datetime.now(timezone.utc)
     previous = read_previous()
-    cities = fetch_forecast()  # the one call that is allowed to fail the run
-
-    coldest = min(cities, key=lambda c: c["min"])
-    answer = "yes" if js_round(coldest["min"]) <= FALL else "no"
-
     status = dict(previous)  # keep fields we don't touch this run
-    status.update({
-        "updated": now.isoformat(),
-        "cities": cities,
-        "answer": answer,
-        "coldest": {"n": coldest["n"], "min": coldest["min"]},
-    })
-
-    # Temperature-coloured map. If this fails, drop the old grid so the page falls
-    # back to colouring from the eight cities rather than showing a stale grid.
     try:
-        status["grid"] = fetch_grid()
-    except Exception as e:  # never let the map grid break the forecast
-        status.pop("grid", None)
-        print(f"Map grid skipped: {e}")
+        cities = fetch_forecast()
+    except Exception as e:
+        cities = None
+        warn(f"Open-Meteo forecast failed after retries ({e}). Keeping the last good forecast "
+             f"from {previous.get('updated', 'never')}; the page will fetch the forecast itself if it is stale.")
+
+    if cities:
+        coldest = min(cities, key=lambda c: c["min"])
+        answer = "yes" if js_round(coldest["min"]) <= FALL else "no"
+        status.update({
+            "updated": now.isoformat(),
+            "cities": cities,
+            "answer": answer,
+            "coldest": {"n": coldest["n"], "min": coldest["min"]},
+        })
+        # Temperature-coloured map. If this fails, drop the old grid so the page falls
+        # back to colouring from the eight cities rather than showing a stale grid.
+        try:
+            status["grid"] = fetch_grid()
+        except Exception as e:  # never let the map grid break the forecast
+            status.pop("grid", None)
+            print(f"Map grid skipped: {e}")
+    elif previous.get("cities"):
+        coldest = previous.get("coldest") or min(previous["cities"], key=lambda c: c["min"])
+        answer = previous_answer(previous) or "no"
+    else:
+        warn("No forecast now and none saved before; nothing to write.")
+        return
 
     # Fallen-iguana reports. The counter on the page and the map markers both come
     # from this one fetch, so they always agree.
@@ -345,6 +372,8 @@ def main():
         print(f"Preview image skipped: {e}")
 
     try:
+        if not cities:
+            raise RuntimeError("no fresh forecast this run")
         dry_run = os.environ.get("DRY_RUN", "").strip().lower() in ("1", "true", "yes")
         flip = should_post(previous_answer(previous), answer, previous.get("last_posted"), now)
         if dry_run:
@@ -360,7 +389,7 @@ def main():
         print(f"Bluesky post skipped: {msg}")
 
     STATUS.write_text(json.dumps(status, indent=1))
-    print(f"Coldest: {coldest['n']} {coldest['min']}F, answer: {answer}")
+    print(f"Coldest: {coldest['n']} {coldest['min']}F, answer: {answer}" + ("" if cities else " (kept from last good run)"))
 
 
 if __name__ == "__main__":

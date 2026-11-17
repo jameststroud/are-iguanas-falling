@@ -508,15 +508,22 @@ async function loadFalls(){
     words();drawFalls();return true;
   }catch(e){return false;}
 }
+/* status.json older than this is treated as stale: fetch the forecast directly instead */
+const STALE_MS=3*60*60*1000;
 async function load(){
+  let stale=null;
   try{const r=await fetch("status.json",{cache:"no-store"});if(!r.ok)throw 0;const j=await r.json();
     if(fallPts===null&&j.falls&&typeof j.falls.count==="number")falls=j.falls.count;
     liveUpdated=j.updated;liveDate=new Date(j.updated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
+    const rows=j.cities.map((c,i)=>({...CITIES[i],...c}));
+    const age=Date.now()-Date.parse(j.updated);
+    if(!(age<STALE_MS)){stale=rows;throw 0;}
     if(Array.isArray(j.grid))grid=j.grid.filter(p=>isFinite(p.lat)&&isFinite(p.lon)&&isFinite(p.min));
-    show(j.cities.map((c,i)=>({...CITIES[i],...c})),"map_live");return}catch(e){}
+    show(rows,"map_live");return}catch(e){}
   try{const q=`https://api.open-meteo.com/v1/forecast?latitude=${CITIES.map(c=>c.lat)}&longitude=${CITIES.map(c=>c.lon)}&daily=temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=2`;
     const r=await fetch(q);if(!r.ok)throw 0;const j=await r.json();
     show(CITIES.map((c,i)=>({...c,min:Math.min(...j[i].daily.temperature_2m_min)})),"map_plain");return}catch(e){}
+  if(stale){show(stale,"map_stale");return}
   show(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})),"map_sample");
 }
 

@@ -17,6 +17,7 @@ window.I18N = {
     map_live: "Coldest low in the next two nights. Updated {d}.",
     map_plain: "Coldest low in the next two nights.",
     map_sample: "Sample temperatures: the live forecast could not load here.",
+    map_stale: "Forecast last updated {d}, so it may be out of date.",
     map_aria: "Map of Florida with forecast overnight lows",
     scene_title: "A green iguana on a tree branch",
 
@@ -291,6 +292,7 @@ window.I18N = {
     map_live: "Mínima más baja en las próximas dos noches. Actualizado {d}.",
     map_plain: "Mínima más baja en las próximas dos noches.",
     map_sample: "Temperaturas de ejemplo: no se pudo cargar el pronóstico en vivo.",
+    map_stale: "Pronóstico actualizado por última vez el {d}, así que puede estar desactualizado.",
     map_aria: "Mapa de Florida con las temperaturas mínimas pronosticadas",
     scene_title: "Una iguana verde en la rama de un árbol",
 
