@@ -2,7 +2,9 @@ name: Update iguana forecast
 
 on:
   schedule:
-    - cron: "17 * * * *"   # every hour, at :17 to dodge the top-of-hour rush
+    # Once a day at 20:43 UTC = 3:43 PM in Florida in winter (4:43 PM in summer),
+    # so each afternoon's run carries the forecast for the coming night.
+    - cron: "43 20 * * *"
   workflow_dispatch:        # lets you run it by hand from the Actions tab
     inputs:
       dry_run:
