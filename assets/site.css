@@ -5,6 +5,7 @@
   --hot:#ff7a2f;--leaf:light-dark(#2f7d32,#7fc97f);--ice:#5aa7d8}
 :root[data-theme=light]{color-scheme:light}:root[data-theme=dark]{color-scheme:dark}
 *{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 Archivo,system-ui,sans-serif;overflow-x:clip;transition:background .8s}
 .band{padding:clamp(28px,4vw,64px) max(5vw,16px)}
 .wrap{max-width:1240px;margin:0 auto}
