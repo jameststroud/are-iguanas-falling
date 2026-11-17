@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://www.areiguanasfallinginflorida.com/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=20261117i">
+<link rel="stylesheet" href="assets/site.css?v=20261117j">
 <style>
 /* VOICE: a goofy roadside sign with a real scientist behind it
    IDEA: a Florida weather board crossed with the Publix sub sign: one huge YES/NO
@@ -426,8 +426,8 @@ header.top .wrap.hero>#scenePanel{grid-column:2;grid-row:1 / span 9;align-self:c
   <button type="button" class="iyclose" id="iykykClose" data-i18n-aria="iykyk_close" aria-label="Close the retro animation">×</button>
   <iframe id="iykykFrame" data-i18n-aria="iykyk_title" aria-label="Retro falling-iguana animation"></iframe>
 </dialog>
-<script src="assets/i18n.js?v=20261117i"></script>
-<script src="assets/analytics.js?v=20261117i"></script>
+<script src="assets/i18n.js?v=20261117j"></script>
+<script src="assets/analytics.js?v=20261117j"></script>
 <script>
 {
 const FALL=44, CHILLY=60; /* 44 and below: falling. 45 to 60: chilly, no sunglasses. Above 60: sunglasses. */
@@ -451,7 +451,7 @@ let d="";for(let x=-48;x<=60;x+=9){const y=-21*Math.sqrt(Math.max(0,1-(x/66)**2)
 $("crest").setAttribute("d",d);$("crestFrost").setAttribute("d",d);
 $("flakes").innerHTML=Array.from({length:26},(_,i)=>`<circle cx="${(i*83)%590+5}" cy="${(i*47)%380+10}" r="${2+i%3}"/>`).join("");
 
-let zipPlace=null,selCity=null,rasterKey=null,rasterURL="",lastAns=null,live=null,liveNote="map_plain",liveDate="",liveUpdated=null,grid=null,lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
+let whatIf=false,zipPlace=null,selCity=null,rasterKey=null,rasterURL="",lastAns=null,live=null,liveNote="map_plain",liveDate="",liveUpdated=null,grid=null,lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
 /* Restart a CSS sequence: "no" = sunglasses land, "yes" = zoom, shiver, fall */
 function runSeq(kind){
   const b=document.body,had=b.classList.contains("seq-no");
@@ -523,6 +523,7 @@ function drawDate(){
 const sceneTemp=c=>c.north?Math.max(FALL+1,Math.round(c.min)):Math.round(c.min);
 function shownCity(){if(!live)return null;if(zipPlace)return zipPlace;return (selCity&&live.find(c=>c.n===selCity))||live.reduce((a,b)=>b.min<a.min?b:a);}
 function selectCity(n){
+  whatIf=false;
   $("sharePanel").hidden=true;
   if(zipPlace){zipPlace=null;$("zipClear").hidden=true;$("zipMsg").textContent="";selCity=null;}
   selCity=selCity===n?null:n;
@@ -572,13 +573,13 @@ async function lookupZip(z){
   const[lat,lon,name]=hit;let t;
   try{t=await lowAt(lat,lon);}catch(e){zipMsg("zip_fail",{z},true);return;}
   zipPlace={n:`${name} (${z})`,sn:name,zip:z,lat,lon,min:Math.round(t*10)/10,north:northOfRange(lat,lon),grid:zipFromGrid};
-  selCity=null;$("zipClear").hidden=false;$("sharePanel").hidden=true;
+  selCity=null;whatIf=false;$("zipClear").hidden=false;$("sharePanel").hidden=true;
   if(window.track)window.track("zip-lookup");
   zipStatus();
   if(live){drawMap(live);words();setScene(sceneTemp(zipPlace));}
 }
 function zipStatus(){if(!zipPlace)return;zipMsg(zipPlace.grid?"zip_ok":"zip_ok_point",{p:zipPlace.n});}
-function clearZip(){$("sharePanel").hidden=true;zipPlace=null;$("zipClear").hidden=true;$("zip").value="";zipMsg("");
+function clearZip(){whatIf=false;$("sharePanel").hidden=true;zipPlace=null;$("zipClear").hidden=true;$("zip").value="";zipMsg("");
   if(live){drawMap(live);words();setScene(sceneTemp(shownCity()));}}
 $("zipForm").addEventListener("submit",e=>{e.preventDefault();lookupZip($("zip").value.trim());});
 $("zip").addEventListener("input",e=>{const v=e.target.value.replace(/\D/g,"").slice(0,5);if(v!==e.target.value)e.target.value=v;});
@@ -635,9 +636,15 @@ function words(){
   const c=shownCity();const t=Math.round(c.min);const L=c.north?"warm":level(t);
   $("qh").textContent=(selCity||zipPlace)?window.t("q_city",{c:c.n}):window.t("q");
   zipStatus();
-  $("answer").textContent=window.t(L==="cold"?"yes":"no");
   updIykyk();
-  $("why").innerHTML=c.north?window.t("why_north",{c:esc2(c.n),t:t}):window.t("why_"+L,{c:esc2(c.n),t:t});
+  if(whatIf){ /* the what-if thermometer drives the big answer; the real forecast stays in the line below */
+    const W=level(sceneT),real=window.t("wi_real",{a:window.t(L==="cold"?"yes_word":"no_word"),t:t,c:esc2(c.sn||c.n)});
+    $("answer").textContent=window.t(W==="cold"?"yes":"no");
+    $("why").innerHTML=window.t("why_wi_"+W,{t:sceneT,r:real});
+  }else{
+    $("answer").textContent=window.t(L==="cold"?"yes":"no");
+    $("why").innerHTML=c.north?window.t("why_north",{c:esc2(c.n),t:t}):window.t("why_"+L,{c:esc2(c.n),t:t});
+  }
   if(liveUpdated)liveDate=new Date(liveUpdated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
   $("mapcap").textContent=window.t(liveNote,{d:liveDate});
   $("st").textContent=window.t("st_"+level(sceneT));
@@ -813,9 +820,9 @@ $("shareCopy").addEventListener("click",async()=>{
 });
 $("shareClose").addEventListener("click",()=>{$("sharePanel").hidden=true;$("share").focus();});
 window.onLangChange(async()=>{const a=realAnswer();if(a&&!$("sharePanel").hidden){try{await openPanel(a,await makeShareImage(a),true);}catch(e){}}});
-$("t").addEventListener("input",e=>setScene(+e.target.value));
-$("cold").addEventListener("click",()=>setScene(38,true));
-$("live").addEventListener("click",()=>{if(live)show(live);});
+$("t").addEventListener("input",e=>{whatIf=true;setScene(+e.target.value);words();});
+$("cold").addEventListener("click",()=>{whatIf=true;setScene(38,true);words();});
+$("live").addEventListener("click",()=>{whatIf=false;if(live)show(live);});
 window.onLangChange(()=>{drawScale();if(live)drawMap(live);});
 window.onLangChange(words);
 window.applyI18n();

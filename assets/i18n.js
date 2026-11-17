@@ -310,7 +310,15 @@ window.I18N = {
     /* Retro animation easter egg (home page, YES nights only) */
     iykyk_btn: "arepublixchickentendersubsonsale.com style iykyk",
     iykyk_title: "Retro falling-iguana animation",
-    iykyk_close: "Close the retro animation"
+    iykyk_close: "Close the retro animation",
+
+    /* What-if thermometer drives the big answer */
+    why_wi_cold: "What if it drops to <b>{t}°F</b>? Iguanas would be falling. Tonight's real forecast: {r}.",
+    why_wi_chilly: "What if it's <b>{t}°F</b>? Sluggish iguanas, but they'd hang on. Tonight's real forecast: {r}.",
+    why_wi_warm: "What if it's <b>{t}°F</b>? The iguanas would be fine. Tonight's real forecast: {r}.",
+    wi_real: "{a}, {t}°F in {c}",
+    yes_word: "YES",
+    no_word: "NO"
   },
 
   es: {
@@ -620,7 +628,15 @@ window.I18N = {
     /* Retro animation easter egg (home page, YES nights only) */
     iykyk_btn: "al estilo arepublixchickentendersubsonsale.com, iykyk",
     iykyk_title: "Animación retro de iguanas cayendo",
-    iykyk_close: "Cerrar la animación retro"
+    iykyk_close: "Cerrar la animación retro",
+
+    /* What-if thermometer drives the big answer */
+    why_wi_cold: "¿Y si baja a <b>{t}°F</b>? Las iguanas estarían cayendo. Pronóstico real de esta noche: {r}.",
+    why_wi_chilly: "¿Y si hace <b>{t}°F</b>? Iguanas lentas, pero aguantarían. Pronóstico real de esta noche: {r}.",
+    why_wi_warm: "¿Y si hace <b>{t}°F</b>? Las iguanas estarían bien. Pronóstico real de esta noche: {r}.",
+    wi_real: "{a}, {t}°F en {c}",
+    yes_word: "SÍ",
+    no_word: "NO"
   }
 };
 

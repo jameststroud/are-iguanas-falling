@@ -22,7 +22,7 @@
   #scene.chill #tree { filter: saturate(0.6) brightness(0.97) hue-rotate(10deg); }
   #ig { position: absolute; transform-origin: 50% 50%; cursor: pointer; will-change: transform; }
   #ig .tilt { transform-origin: 50% 80%; }
-  #ig img { display: block; width: 100%; height: auto; transform-origin: 70% 100%; user-select: none; -webkit-user-drag: none;
+  #ig img { display: block; width: 100%; height: auto; transform-origin: 70% 100%; user-select: none; -webkit-user-drag: none; transition: filter 1.2s;
             filter: drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.35)); }
   #ig.bob img { animation: bob 1.6s ease-in-out infinite; }
   #ig.slow img { animation: bob 5s ease-in-out infinite; filter: saturate(0.35) brightness(0.92) drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.35)); }
@@ -111,8 +111,16 @@
     if (t <= SLUG_AT) return ["NOT YET.", "maybe", `${t}°F. Iguanas are getting sluggish. Hold on, buddy.`];
     return ["NO.", "", `${t}°F. Iguanas are basking, bobbing and doing fine.`];
   }
+  /* Added for areiguanasfallinginflorida.com: the photo iguana changes colour with the temperature,
+     vivid green when warm (72°F and up), shading to the cartoon's icy blue at 44°F and below (and while fallen) */
+  const igImg = ig.querySelector("img");
+  function tint(t) {
+    const f = state === "fallen" ? 1 : Math.min(1, Math.max(0, (72 - t) / (72 - FALL_AT)));
+    const hue = 18 + 117 * f, sat = 1.9 - 0.75 * f, bri = 1.05 + 0.2 * f;
+    igImg.style.filter = `hue-rotate(${hue.toFixed(0)}deg) saturate(${sat.toFixed(2)}) brightness(${bri.toFixed(2)}) drop-shadow(2px 4px 3px rgba(0, 0, 0, 0.35))`;
+  }
   function render() {
-    const t = +slider.value; tval.textContent = t;
+    const t = +slider.value; tval.textContent = t; tint(t);
     const [a, cls, line] = words(t);
     ans.textContent = a; ans.className = cls; say.textContent = line;
     mq.classList.toggle("on", state === "fallen");
