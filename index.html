@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://www.areiguanasfallinginflorida.com/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=20261117a">
+<link rel="stylesheet" href="assets/site.css?v=20261117b">
 <style>
 /* VOICE: a goofy roadside sign with a real scientist behind it
    IDEA: a Florida weather board crossed with the Publix sub sign: one huge YES/NO
@@ -81,7 +81,7 @@ body.cold .big{color:var(--ice)}
 .legend .dot{width:11px;height:11px;border-radius:50%;background:var(--ink);border:2px solid #fff;box-shadow:0 0 0 1px var(--line)}
 .legend .dash{flex:none;width:24px;height:0;border-top:3px dashed var(--ink)}
 .legend .dot,.legend .dia{flex:none}
-@media(max-width:600px){.mapdate{font-size:11px;top:4px;right:4px;padding:1px 6px}.mapbox{gap:6px;padding:10px 10px 4px}.scale{grid-template-columns:10px 64px;gap:5px}.scale .lab{font-size:10.5px}.scale .lab .fz{font-size:10px;padding:3px 4px}.scale .lab .tim{display:none}}
+@media(max-width:600px){.mapdate{font-size:11px;top:4px;right:4px;padding:1px 6px}.mapzip{top:26px}.mapbox{gap:6px;padding:10px 10px 4px}.scale{grid-template-columns:10px 64px;gap:5px}.scale .lab{font-size:10.5px}.scale .lab .fz{font-size:10px;padding:3px 4px}.scale .lab .tim{display:none}}
 .legend .dia{width:10px;height:10px;background:var(--ink);transform:rotate(45deg);margin:0 1px}
 .hidnote{font-size:13px;color:var(--soft);padding:0 16px 14px;margin:0}
 .cap{font-size:14px;color:var(--soft);padding:0 16px 14px;margin:0}
@@ -172,6 +172,19 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
 @keyframes fall{0%{transform:none}10%{transform:rotate(-5deg)}20%{transform:rotate(6deg)}28%{transform:translate(0,8px) rotate(25deg)}68%{transform:translate(-14px,240px) rotate(180deg)}74%{transform:translate(-14px,218px) rotate(176deg)}80%,100%{transform:translate(-14px,229px) rotate(180deg)}}
 @keyframes snow{from{transform:translateY(-20px)}to{transform:translateY(60px)}}
 .sharerow{margin-top:18px}
+.zipform{margin-top:18px;max-width:560px}
+.zipform label{display:block;font-weight:700;margin-bottom:6px}
+.zipform .zrow{display:flex;flex-wrap:wrap;gap:8px}
+.zipform input{font:700 18px Archivo,sans-serif;letter-spacing:.08em;width:7.5em;min-height:44px;padding:0 14px;border:2px solid var(--ink);border-radius:999px;background:var(--card);color:var(--ink)}
+.zipform input::placeholder{color:var(--soft);opacity:.6}
+.zipmsg{margin:8px 0 0;font-weight:600;color:var(--soft);min-height:1.2em}
+.zipmsg.err{color:light-dark(#b04a10,#ffb07a)}
+.zipcredit{margin:4px 0 0;font-size:12.5px;color:var(--soft)}
+.zippin path{fill:#ff7a2f;stroke:#fff;stroke-width:1.6}
+.mapzip{top:38px;display:flex;align-items:center;gap:6px}
+.mapzip[hidden]{display:none}
+.mapzip::before{content:"";width:9px;height:9px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:#ff7a2f;border:1.5px solid #fff}
+.zippin text{font:700 13px Archivo,sans-serif;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:3.5px;stroke-linejoin:round}
 .sharepanel{display:grid;grid-template-columns:200px minmax(0,1fr);gap:20px;align-items:start;margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;max-width:720px}
 .sharepanel[hidden]{display:none}
 .sharepanel img{width:100%;height:auto;border-radius:12px;border:1px solid var(--line)}
@@ -210,6 +223,16 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
   <h1 id="qh" data-i18n="q">Are iguanas falling out of the trees in Florida?</h1>
   <div class="big" id="answer" aria-live="polite">NO.</div>
   <p class="sub" id="why">Checking the forecast…</p>
+  <form class="zipform" id="zipForm" novalidate>
+    <label for="zip" data-i18n="zip_label">Check your Florida ZIP code</label>
+    <div class="zrow">
+      <input id="zip" name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}" placeholder="33139" aria-describedby="zipMsg">
+      <button class="solid" type="submit" data-i18n="zip_go">Check</button>
+      <button type="button" id="zipClear" hidden data-i18n="city_all">All of Florida</button>
+    </div>
+    <p class="zipmsg" id="zipMsg" aria-live="polite"></p>
+    <p class="zipcredit" data-i18n="zip_credit">ZIP code locations from GeoNames (CC BY 4.0).</p>
+  </form>
   <div class="sharerow"><button class="solid" id="share" type="button" hidden data-i18n="share_btn">Share tonight's answer</button></div>
   <div class="sharepanel" id="sharePanel" hidden>
     <img id="shareImg" alt="" width="1080" height="1350">
@@ -308,6 +331,7 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
       <div class="mapbox"><div class="mapwrap" id="mapwrap">
         <svg id="map" viewBox="-10 0 545 400" role="img" data-i18n-aria="map_aria" aria-label="Map of Florida with forecast overnight lows"></svg>
         <div class="mapdate" id="mapdate"></div>
+        <div class="mapdate mapzip" id="mapzip" hidden></div>
         <div id="cityHits"></div>
         <div id="pins"></div>
         <div class="pop" id="pop" hidden role="dialog" aria-labelledby="popH">
@@ -379,8 +403,8 @@ body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
   <p data-i18n="privacy">We count visits with GoatCounter, which uses no cookies and collects no personal data.</p>
 </div></footer>
 
-<script src="assets/i18n.js?v=20261117a"></script>
-<script src="assets/analytics.js?v=20261117a"></script>
+<script src="assets/i18n.js?v=20261117b"></script>
+<script src="assets/analytics.js?v=20261117b"></script>
 <script>
 {
 const FALL=44, CHILLY=60; /* 44 and below: falling. 45 to 60: chilly, no sunglasses. Above 60: sunglasses. */
@@ -402,7 +426,7 @@ let d="";for(let x=-48;x<=60;x+=9){const y=-21*Math.sqrt(Math.max(0,1-(x/66)**2)
 $("crest").setAttribute("d",d);$("crestFrost").setAttribute("d",d);
 $("flakes").innerHTML=Array.from({length:26},(_,i)=>`<circle cx="${(i*83)%590+5}" cy="${(i*47)%380+10}" r="${2+i%3}"/>`).join("");
 
-let selCity=null,rasterKey=null,rasterURL="",lastAns=null,live=null,liveNote="map_plain",liveDate="",liveUpdated=null,grid=null,lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
+let zipPlace=null,selCity=null,rasterKey=null,rasterURL="",lastAns=null,live=null,liveNote="map_plain",liveDate="",liveUpdated=null,grid=null,lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
 /* Restart a CSS sequence: "no" = sunglasses land, "yes" = zoom, shiver, fall */
 function runSeq(kind){
   const b=document.body,had=b.classList.contains("seq-no");
@@ -461,22 +485,80 @@ function drawDate(){
   const d=liveUpdated?new Date(liveUpdated):new Date();
   try{$("mapdate").textContent=d.toLocaleDateString(window.getLang()==="es"?"es-US":"en-US",{timeZone:"America/New_York",weekday:"short",month:"short",day:"numeric",year:"numeric"});}catch(e){$("mapdate").textContent="";}
 }
-/* The city whose forecast the page is showing: the one picked on the map, else the coldest */
-function shownCity(){if(!live)return null;return (selCity&&live.find(c=>c.n===selCity))||live.reduce((a,b)=>b.min<a.min?b:a);}
+/* The place whose forecast the page is showing: a ZIP code, else the city picked on the map,
+   else the coldest city */
+/* Temperature for the cartoon: north of the iguana range it can shiver but never falls */
+const sceneTemp=c=>c.north?Math.max(FALL+1,Math.round(c.min)):Math.round(c.min);
+function shownCity(){if(!live)return null;if(zipPlace)return zipPlace;return (selCity&&live.find(c=>c.n===selCity))||live.reduce((a,b)=>b.min<a.min?b:a);}
 function selectCity(n){
+  $("sharePanel").hidden=true;
+  if(zipPlace){zipPlace=null;$("zipClear").hidden=true;$("zipMsg").textContent="";selCity=null;}
   selCity=selCity===n?null:n;
   if(window.track)window.track(selCity?"city-"+selCity.toLowerCase().replace(/\s+/g,"-"):"city-all");
   if(!live)return;
-  drawMap(live);words();const c=shownCity();setScene(Math.round(c.min));
+  drawMap(live);words();const c=shownCity();setScene(sceneTemp(c));
 }
 function drawChips(){
   if(!live)return;
   $("citySel").innerHTML=`<option value="">${window.t("city_all")}</option>`+
+    (zipPlace?`<option value="__zip">${window.t("zip_opt",{z:zipPlace.zip})} · ${Math.round(zipPlace.min)}°F</option>`:"")+
     live.map(c=>`<option value="${c.n}"${selCity===c.n?" selected":""}>${c.n} · ${Math.round(c.min)}°F</option>`).join("");
-  $("citySel").value=selCity||"";
+  $("citySel").value=zipPlace?"__zip":selCity||"";
 }
-$("citySel").addEventListener("change",e=>{const n=e.target.value;if(n)selectCity(n);else if(selCity)selectCity(selCity);});
+$("citySel").addEventListener("change",e=>{const n=e.target.value;if(n==="__zip")return;
+  if(n)selectCity(n);else if(zipPlace)clearZip();else if(selCity)selectCity(selCity);});
+
+/* ===== ZIP code forecast =====
+   The ZIP is looked up in assets/fl-zips.json (GeoNames postal codes, CC BY 4.0) inside the
+   browser; it is never sent anywhere. The low is interpolated from the same forecast grid
+   that colours the map, so it always agrees with the map and costs no extra API calls.
+   Only if the grid is missing does the page ask Open-Meteo for that one point. */
+let ZIPS=null;
+const esc2=x=>String(x).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function zipMsg(key,vars,err){$("zipMsg").textContent=key?window.t(key,vars):"";$("zipMsg").classList.toggle("err",!!err);}
+/* north of the green iguana range line (RANGE) at this longitude? */
+function northOfRange(lat,lon){
+  const r=RANGE;if(lon<=r[0][1])return lat>r[0][0];if(lon>=r[r.length-1][1])return lat>r[r.length-1][0];
+  for(let i=1;i<r.length;i++)if(lon<=r[i][1]){const f=(lon-r[i-1][1])/(r[i][1]-r[i-1][1]);return lat>r[i-1][0]+f*(r[i][0]-r[i-1][0]);}
+  return false;
+}
+let zipFromGrid=true;
+async function lowAt(lat,lon){
+  const fresh=grid&&grid.length&&liveNote==="map_live";zipFromGrid=!!fresh;
+  if(fresh){const[x,y]=P(lon,lat);return idw(grid.map(p=>{const[px,py]=P(p.lon,p.lat);return{x:px,y:py,t:p.min};}),x,y);}
+  try{const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=temperature_2m_min&temperature_unit=fahrenheit&timezone=America%2FNew_York&forecast_days=2`);
+    if(!r.ok)throw 0;const j=await r.json();return Math.min(...j.daily.temperature_2m_min);}
+  catch(e){if(!live)throw e;const[x,y]=P(lon,lat);return idw(live.map(c=>{const[px,py]=P(c.lon,c.lat);return{x:px,y:py,t:c.min};}),x,y);}
+}
+async function lookupZip(z){
+  if(!/^\d{5}$/.test(z)){zipMsg("zip_bad",null,true);return;}
+  zipMsg("zip_loading",{z});
+  try{if(!ZIPS){const r=await fetch("assets/fl-zips.json?v=1");if(!r.ok)throw 0;ZIPS=await r.json();}}
+  catch(e){zipMsg("zip_fail",{z},true);return;}
+  const hit=ZIPS[z];
+  if(!hit){zipMsg("zip_notfl",{z},true);return;}
+  const[lat,lon,name]=hit;let t;
+  try{t=await lowAt(lat,lon);}catch(e){zipMsg("zip_fail",{z},true);return;}
+  zipPlace={n:`${name} (${z})`,sn:name,zip:z,lat,lon,min:Math.round(t*10)/10,north:northOfRange(lat,lon),grid:zipFromGrid};
+  selCity=null;$("zipClear").hidden=false;$("sharePanel").hidden=true;
+  if(window.track)window.track("zip-lookup");
+  zipStatus();
+  if(live){drawMap(live);words();setScene(sceneTemp(zipPlace));}
+}
+function zipStatus(){if(!zipPlace)return;zipMsg(zipPlace.grid?"zip_ok":"zip_ok_point",{p:zipPlace.n});}
+function clearZip(){$("sharePanel").hidden=true;zipPlace=null;$("zipClear").hidden=true;$("zip").value="";zipMsg("");
+  if(live){drawMap(live);words();setScene(sceneTemp(shownCity()));}}
+$("zipForm").addEventListener("submit",e=>{e.preventDefault();lookupZip($("zip").value.trim());});
+$("zip").addEventListener("input",e=>{const v=e.target.value.replace(/\D/g,"").slice(0,5);if(v!==e.target.value)e.target.value=v;});
+$("zipClear").addEventListener("click",clearZip);
 $("cityHits").addEventListener("click",e=>{const b=e.target.closest(".cityhit");if(b)selectCity(b.dataset.city);});
+/* ZIP pin on the map; its ZIP and low go in a badge under the date (no label clashes) */
+function zipPin(){
+  $("mapzip").hidden=!zipPlace;
+  if(!zipPlace)return "";
+  $("mapzip").textContent=`${zipPlace.sn} ${zipPlace.zip} · ${Math.round(zipPlace.min)}°F`;
+  const[x,y]=P(zipPlace.lon,zipPlace.lat);
+  return `<g class="zippin"><path d="M${x},${y} c-6,-9 -10,-13 -10,-19 a10,10 0 1 1 20,0 c0,6 -4,10 -10,19z"/><circle cx="${x}" cy="${y-19}" r="3.5" fill="#fff"/></g>`;}
 function drawMap(rows){
   const srcRows=grid&&grid.length?grid:rows;
   if(rasterKey!==srcRows){rasterKey=srcRows;rasterURL=tempImage(srcRows.map(p=>{const[x,y]=P(p.lon,p.lat);return{x,y,t:p.min};}));}
@@ -490,7 +572,7 @@ function drawMap(rows){
     <image href="${url}" x="-10" y="0" width="545" height="400" preserveAspectRatio="none" clip-path="url(#flclip)"/>
     <path d="${FL}" class="coast"/>${keys.map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="2" class="coast"/>`).join("")}
     <path d="${rd}" class="range-halo"/><path d="${rd}" class="range"/>
-    <text class="rlab" text-anchor="end" x="${rx-6}" y="${ry-24}"><tspan x="${rx-6}">${window.t("range_l1")}</tspan><tspan x="${rx-6}" dy="14">${window.t("range_l2")}</tspan></text>`+pins;
+    <text class="rlab" text-anchor="end" x="${rx-6}" y="${ry-24}"><tspan x="${rx-6}">${window.t("range_l1")}</tspan><tspan x="${rx-6}" dy="14">${window.t("range_l2")}</tspan></text>`+pins+zipPin();
   $("maphow").textContent=grid&&grid.length?window.t("map_how",{n:grid.length}):window.t("map_how_cities");
   drawDate();
   /* invisible buttons over each city dot and label, so the map itself is clickable */
@@ -501,10 +583,11 @@ function drawMap(rows){
 }
 function words(){
   if(!live)return;
-  const c=shownCity();const t=Math.round(c.min);const L=level(t);
-  $("qh").innerHTML=selCity?window.t("q_city",{c:c.n}):window.t("q");
+  const c=shownCity();const t=Math.round(c.min);const L=c.north?"warm":level(t);
+  $("qh").textContent=(selCity||zipPlace)?window.t("q_city",{c:c.n}):window.t("q");
+  zipStatus();
   $("answer").textContent=window.t(L==="cold"?"yes":"no");
-  $("why").innerHTML=window.t("why_"+L,{c:c.n,t:t});
+  $("why").innerHTML=c.north?window.t("why_north",{c:esc2(c.n),t:t}):window.t("why_"+L,{c:esc2(c.n),t:t});
   if(liveUpdated)liveDate=new Date(liveUpdated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
   $("mapcap").textContent=window.t(liveNote,{d:liveDate});
   $("st").textContent=window.t("st_"+level(sceneT));
@@ -514,7 +597,7 @@ function words(){
 function show(rows,note){
   live=rows;if(note)liveNote=note;drawMap(rows);words();
   $("share").hidden=liveNote==="map_sample";
-  const c=shownCity();setScene(Math.round(c.min));
+  const c=shownCity();setScene(sceneTemp(c));
 }
 /* ===== Reported falls (falls.json, written by the daily job) =====
    The counter and the markers come from the same file, so they always agree.
@@ -582,7 +665,7 @@ const PAL={warm:{"--sky1":"#ffd27a","--sky2":"#8fd3ef","--ground":"#7cb342","--i
 function realAnswer(){
   if(!live||liveNote==="map_sample")return null;
   const c=shownCity();const t=Math.round(c.min);
-  return {yes:t<=FALL,c:c.n,t:t,city:!!selCity};
+  return {yes:t<=FALL&&!c.north,c:c.sn||c.n,t:t,city:!!(selCity||zipPlace)};
 }
 /* The page's own cartoon scene, frozen in the YES (fallen) or NO (on the branch) pose */
 function sceneImage(yes,t){
@@ -674,7 +757,8 @@ window.onLangChange(()=>{drawScale();if(live)drawMap(live);});
 window.onLangChange(words);
 window.applyI18n();
 $("why").textContent=window.t("checking");
-drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70,false,true);loadFalls().then(load);
+drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70,false,true);
+loadFalls().then(load).then(()=>{try{const z=new URLSearchParams(location.search).get("zip");if(z){$("zip").value=z.replace(/\D/g,"").slice(0,5);lookupZip($("zip").value);}}catch(e){}});
 }
 </script>
 </body>

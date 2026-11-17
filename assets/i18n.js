@@ -287,7 +287,22 @@ window.I18N = {
     zone_bask: "Basking",
     zone_slug: "Sluggish",
     zone_fall: "Iguana falling zone",
-    zone_timber: "Timber!"
+    zone_timber: "Timber!",
+
+    /* ZIP code forecast (home page) */
+    zip_label: "Check your Florida ZIP code",
+    zip_go: "Check",
+    zip_bad: "Please enter a 5-digit ZIP code.",
+    zip_notfl: "{z} doesn't look like a Florida ZIP code. Florida ZIP codes start with 32, 33 or 34.",
+    zip_loading: "Looking up {z}…",
+    zip_ok: "Showing the forecast for {p}, estimated from nearby forecast points.",
+    zip_fail: "Sorry, we couldn't get a forecast for {z} right now. Please try again in a minute.",
+    zip_opt: "ZIP {z}",
+    zip_credit: "ZIP code locations from <a href=\"https://www.geonames.org/\">GeoNames</a> (CC BY 4.0).",
+
+    /* ZIP code forecast: places north of the iguana range */
+    why_north: "<b>{c}</b> is forecast to drop to <b>{t}°F</b>, but green iguanas don't usually live this far north, so there are none to fall.",
+    zip_ok_point: "Showing the forecast for {p}."
   },
 
   es: {
@@ -574,7 +589,22 @@ window.I18N = {
     zone_bask: "Tomando el sol",
     zone_slug: "Lentas",
     zone_fall: "Zona de iguanas cayendo",
-    zone_timber: "¡Allá van!"
+    zone_timber: "¡Allá van!",
+
+    /* ZIP code forecast (home page) */
+    zip_label: "Consulta tu código postal de Florida",
+    zip_go: "Consultar",
+    zip_bad: "Escribe un código postal de 5 dígitos.",
+    zip_notfl: "{z} no parece un código postal de Florida. Los códigos de Florida empiezan con 32, 33 o 34.",
+    zip_loading: "Buscando {z}…",
+    zip_ok: "Mostrando el pronóstico para {p}, estimado a partir de puntos de pronóstico cercanos.",
+    zip_fail: "Lo sentimos, no pudimos obtener el pronóstico para {z} en este momento. Inténtalo de nuevo en un minuto.",
+    zip_opt: "Código {z}",
+    zip_credit: "Ubicaciones de códigos postales de <a href=\"https://www.geonames.org/\">GeoNames</a> (CC BY 4.0).",
+
+    /* ZIP code forecast: places north of the iguana range */
+    why_north: "Se pronostica que <b>{c}</b> bajará a <b>{t}°F</b>, pero las iguanas verdes no suelen vivir tan al norte, así que no hay ninguna que se caiga.",
+    zip_ok_point: "Mostrando el pronóstico para {p}."
   }
 };
 

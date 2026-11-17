@@ -16,6 +16,7 @@ From the Stroud Lab at Georgia Tech.
 | `who.html` | "Who are we?" page. Lab roster is near the bottom of the file (`PEOPLE` and `ALUMNI`) |
 | `assets/i18n.js` | Every piece of English and Spanish text on the site. Edit wording here |
 | `assets/analytics.js` | GoatCounter visit counter and event tracking. Your GoatCounter code goes at the top |
+| `assets/fl-zips.json` | Florida ZIP codes (1,473) with latitude, longitude and place name, for the ZIP code forecast. From GeoNames, CC BY 4.0 |
 | `assets/site.css` | Shared look (colours, fonts, nav, buttons) |
 | `animations/` | Three reserve animations (field guide, thermal camera, night silhouette). Not linked from the site; visit `/animations/` to see them |
 | `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and this winter's iNaturalist reports, writes `status.json` and `falls.json`, swaps the preview image, posts to Bluesky on a NO→YES flip |
@@ -68,6 +69,15 @@ The Florida map on the home page is coloured by the forecast overnight low. Each
 If the grid fetch fails, the page colours the map from the 8 cities instead.
 
 **Picking a city.** Visitors can click a city on the map (or choose it from the "Pick a city" list under the map). The heading, YES/NO, explanation, cartoon iguana and the share image then follow that city's forecast; clicking it again, or choosing "All of Florida", goes back to the coldest city. The scale bar's captions (Basking, Sluggish, Iguana falling zone, Timber!) are the `zone_` keys in `assets/i18n.js`. Colours are set in `COLD_STOPS` and `WARM_STOPS` in `index.html`.
+
+## ZIP code forecast
+
+Under the big answer, visitors can type a Florida ZIP code. The page looks it up in `assets/fl-zips.json` (downloaded only when someone uses the box), interpolates the overnight low at that spot from the same forecast grid that colors the map, and switches the heading, YES/NO, explanation, cartoon, share image and map pin to that place. If the grid is missing it asks Open-Meteo for that one point instead.
+
+- **Privacy:** the ZIP never leaves the visitor's browser. GoatCounter only records that a lookup happened (`zip-lookup`), not which ZIP.
+- **North of the iguana range** (the dashed line), the answer is always NO, with a note that green iguanas don't usually live that far north, even if it is cold.
+- **Links:** `?zip=33139` at the end of the address opens straight to that ZIP, e.g. `https://www.areiguanasfallinginflorida.com/?zip=33139`.
+- **Data credit:** ZIP locations are from GeoNames (https://www.geonames.org/, CC BY 4.0); the credit line under the box is required by that license. To refresh the table, download `US.zip` from https://download.geonames.org/export/zip/ and keep the rows whose state code is `FL`.
 
 ## Map of reported falls
 
