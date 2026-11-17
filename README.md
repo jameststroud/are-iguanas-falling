@@ -18,7 +18,7 @@ From the Stroud Lab at Georgia Tech.
 | `assets/analytics.js` | GoatCounter visit counter and event tracking. Your GoatCounter code goes at the top |
 | `assets/fl-zips.json` | Florida ZIP codes (1,473) with latitude, longitude and place name, for the ZIP code forecast. From GeoNames, CC BY 4.0 |
 | `assets/stroud-lab-logo.png` | Stroud Lab @ Georgia Tech logo (1600 px wide, transparent). On the home page it replaces the site name at the top left of the menu bar; the other pages show it in the footer (on a white card, so it reads in dark mode), and bottom right of the share image |
-| `iykyk.html` | Retro "arepublixchickentendersubsonsale.com style" falling-iguana animation (photo cut-outs, embedded). Opens full screen from a button under the home-page animation, which only appears when the answer is YES |
+| `iykyk.html` | Retro "arepublixchickentendersubsonsale.com style" falling-iguana animation (photo cut-outs, embedded). Opens full screen from a button under the home-page animation, which appears when the answer is YES or when the what-if thermometer is at 44°F or below |
 | `assets/site.css` | Shared look (colours, fonts, nav, buttons) |
 | `animations/` | Three reserve animations (field guide, thermal camera, night silhouette). Not linked from the site; visit `/animations/` to see them |
 | `scripts/update_forecast.py` | Pulls overnight lows (Open-Meteo) and this winter's iNaturalist reports, writes `status.json` and `falls.json`, swaps the preview image, posts to Bluesky on a NO→YES flip |

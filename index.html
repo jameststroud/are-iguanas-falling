@@ -459,8 +459,13 @@ function runSeq(kind){
   if(kind!=="no"&&had)b.classList.add("had-shades");
   b.classList.add("seq-"+kind);
 }
+/* The iykyk button shows when the forecast says YES, or when the what-if thermometer
+   (slider or "Send a cold front") is in the falling zone */
+function updIykyk(){const c=shownCity();
+  const fc=!!(c&&!c.north&&Math.round(c.min)<=FALL);
+  $("iykykRow").hidden=!(fc||sceneT<=FALL);}
 function setScene(t,replay,quiet){
-  sceneT=t;
+  sceneT=t;if($("iykykRow"))updIykyk();
   const L=level(t);document.body.classList.remove("cold","chilly","warm");document.body.classList.add(L);
   if(!quiet){const kind=L==="cold"?"yes":L==="chilly"?"chilly":"no";
     if(kind!==lastAns||(replay&&kind==="yes"))runSeq(kind);
@@ -631,7 +636,7 @@ function words(){
   $("qh").textContent=(selCity||zipPlace)?window.t("q_city",{c:c.n}):window.t("q");
   zipStatus();
   $("answer").textContent=window.t(L==="cold"?"yes":"no");
-  $("iykykRow").hidden=L!=="cold";
+  updIykyk();
   $("why").innerHTML=c.north?window.t("why_north",{c:esc2(c.n),t:t}):window.t("why_"+L,{c:esc2(c.n),t:t});
   if(liveUpdated)liveDate=new Date(liveUpdated).toLocaleString(window.getLang()==="es"?"es":"en",{weekday:"short",hour:"numeric",minute:"2-digit"});
   $("mapcap").textContent=window.t(liveNote,{d:liveDate});
@@ -817,7 +822,8 @@ window.applyI18n();
 $("why").textContent=window.t("checking");
 /* "iykyk": the retro animation (iykyk.html) full screen, starting at the forecast low being shown */
 $("iykykBtn").addEventListener("click",()=>{const c=shownCity();
-  $("iykykFrame").src="iykyk.html?t="+(c?Math.round(c.min):38);$("iykyk").showModal();$("iykykClose").focus();});
+  const fc=c&&!c.north?Math.round(c.min):99;
+  $("iykykFrame").src="iykyk.html?t="+Math.max(30,Math.min(85,sceneT<=FALL?sceneT:fc<=FALL?fc:38));$("iykyk").showModal();$("iykykClose").focus();});
 $("iykykClose").addEventListener("click",()=>$("iykyk").close());
 $("iykyk").addEventListener("close",()=>{$("iykykFrame").src="about:blank";$("iykykBtn").focus();});
 /* Narrow screens: the cartoon sits right under the big YES/NO; wider screens: beside it in the header, mirrored */
