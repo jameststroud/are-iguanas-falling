@@ -65,9 +65,9 @@ The Florida map on the home page is coloured by the forecast overnight low. Each
 - **44°F and below** as one blue class (darker = colder), outlined in white;
 - **above 44°F** as a ramp from pale cream (45°F) to deep orange (80°F), with a vertical scale bar to the right of the map;
 - the **approximate northern range limit of green iguanas** as a dashed line (`RANGE` in `index.html`), traced from iNaturalist observations;
-- the 8 cities with their lows, and the date in the top-right corner.
+- the 11 cities (Key West, Miami, Fort Lauderdale, West Palm Beach, Port St. Lucie, Orlando, Tampa, Sarasota, Fort Myers, Naples, Sebring) with their lows, and the date in the top-right corner. To add or remove a city, edit `CITIES` in both `index.html` (with the side its label goes on) and `scripts/update_forecast.py`, in the same order.
 
-If the grid fetch fails, the page colours the map from the 8 cities instead.
+If the grid fetch fails, the page colours the map from the 11 cities instead.
 
 **Picking a city.** Visitors can click a city on the map (or choose it from the "Pick a city" list under the map). The heading, YES/NO, explanation, cartoon iguana and the share image then follow that city's forecast; clicking it again, or choosing "All of Florida", goes back to the coldest city. The scale bar's captions (Basking, Sluggish, Iguana falling zone, Timber!) are the `zone_` keys in `assets/i18n.js`. Colours are set in `COLD_STOPS` and `WARM_STOPS` in `index.html`.
 

@@ -24,7 +24,7 @@
 <meta name="twitter:image" content="https://www.areiguanasfallinginflorida.com/og-image.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/site.css?v=20261117g">
+<link rel="stylesheet" href="assets/site.css?v=20261117h">
 <style>
 /* VOICE: a goofy roadside sign with a real scientist behind it
    IDEA: a Florida weather board crossed with the Publix sub sign: one huge YES/NO
@@ -414,8 +414,8 @@ header.top .wrap.hero>#scenePanel{grid-column:2;grid-row:1 / span 9;align-self:c
   <p data-i18n="privacy">We count visits with GoatCounter, which uses no cookies and collects no personal data.</p>
 </div></footer>
 
-<script src="assets/i18n.js?v=20261117g"></script>
-<script src="assets/analytics.js?v=20261117g"></script>
+<script src="assets/i18n.js?v=20261117h"></script>
+<script src="assets/analytics.js?v=20261117h"></script>
 <script>
 {
 const FALL=44, CHILLY=60; /* 44 and below: falling. 45 to 60: chilly, no sunglasses. Above 60: sunglasses. */
@@ -424,8 +424,10 @@ const CITIES=[
  {n:"Miami",lat:25.76,lon:-80.19,side:"r"},{n:"Fort Lauderdale",lat:26.12,lon:-80.14,side:"r"},
  {n:"West Palm Beach",lat:26.71,lon:-80.05,side:"r"},{n:"Naples",lat:26.14,lon:-81.79,side:"l"},
  {n:"Fort Myers",lat:26.64,lon:-81.87,side:"l"},{n:"Key West",lat:24.56,lon:-81.78,side:"r"},
- {n:"Tampa",lat:27.95,lon:-82.46,side:"l"},{n:"Orlando",lat:28.54,lon:-81.38,side:"r"}];
-const SAMPLE=[66,67,65,63,62,72,60,58];
+ {n:"Tampa",lat:27.95,lon:-82.46,side:"l"},{n:"Orlando",lat:28.54,lon:-81.38,side:"r"},
+ {n:"Port St. Lucie",lat:27.29,lon:-80.35,side:"r"},
+ {n:"Sarasota",lat:27.34,lon:-82.53,side:"l"},{n:"Sebring",lat:27.50,lon:-81.44,side:"t"}];
+const SAMPLE=[66,67,65,63,62,72,60,58,62,61,59];
 const K=Math.cos(28*Math.PI/180),P=(lo,la)=>[(lo+87.7)*K*55+10,(31.1-la)*55+10];
 const FL="M117.0,15.6L140.9,15.3L147.6,31.3L214.1,34.9L276.3,39.1L278.7,50.9L284.5,50.6L286.7,39.4L284.8,29.2L289.3,25.0L300.5,29.5L313.8,31.6L316.7,55.4L322.8,82.2L336.9,117.5L358.5,155.1L355.3,157.8L356.4,175.3L365.4,194.9L379.5,234.3L382.4,246.7L382.1,259.3L376.8,304.8L372.3,305.7L367.5,319.9L369.1,324.4L359.8,334.6L356.1,332.2L347.0,336.4L331.6,338.9L327.1,333.1L329.2,324.7L318.3,300.3L309.8,295.8L302.4,299.1L296.5,285.5L294.9,274.4L284.8,262.0L282.4,253.9L284.0,242.2L278.4,240.1L279.8,247.0L274.7,248.8L259.3,219.0L253.2,211.4L267.8,189.4L258.2,190.7L251.8,197.6L245.4,186.7L254.0,156.6L255.5,131.6L249.7,125.6L247.8,117.5L238.5,115.6L227.6,102.4L218.8,97.0L218.3,88.8L212.2,85.8L207.1,76.8L188.5,64.7L172.3,67.4L173.1,75.9L167.8,74.4L147.6,84.6L126.0,87.0L126.6,81.0L121.5,73.8L96.2,57.5L78.1,50.6L61.9,48.8L48.4,50.0L18.8,55.1L26.0,47.0L22.3,42.4L24.2,33.4L13.2,22.9L14.8,15.6L117.0,15.6Z";
 const keys=[[358,341],[349,347],[338,353],[326,358],[316,363],[306,367],[298,369]];
@@ -458,7 +460,7 @@ function setScene(t,replay,quiet){
 /* ===== Temperature map =====
    Land is coloured by the forecast overnight low, interpolated (inverse-distance weighting
    in map space) between the daily job's forecast grid in status.json, or between the
-   8 cities if the grid is missing. 44°F and below is one blue class (darker = colder);
+   cities if the grid is missing. 44°F and below is one blue class (darker = colder);
    above that a sequential ramp runs from pale cream at 45°F to deep orange at 80°F. */
 const COLD_STOPS=[[30,"#163f78"],[37,"#2563ab"],[44,"#3f86d1"]];
 const WARM_STOPS=[[45,"#f4eedf"],[50,"#f6dfb0"],[55,"#f4c77c"],[60,"#f1aa58"],[65,"#ea8a3f"],[72,"#d96a2c"],[80,"#b44a1c"]];
@@ -593,9 +595,9 @@ function drawMap(rows){
   const srcRows=grid&&grid.length?grid:rows;
   if(rasterKey!==srcRows){rasterKey=srcRows;rasterURL=tempImage(srcRows.map(p=>{const[x,y]=P(p.lon,p.lat);return{x,y,t:p.min};}));}
   const url=rasterURL;
-  const pins=rows.map(c=>{const[x,y]=P(c.lon,c.lat);const r=c.side==="r";
+  const pins=rows.map(c=>{const[x,y]=P(c.lon,c.lat);const r=c.side==="r",bl=c.side==="t",dy=c.dy||0; /* side: r right, l left, t above */
     return `<g class="city${selCity===c.n?" sel":""}" data-city="${c.n}">${miniIguana(x,y,level(Math.round(c.min)),selCity===c.n)}
-    <text x="${r?x+20:x-20}" y="${y+4.5}" text-anchor="${r?"start":"end"}">${c.n} <tspan class="t">${Math.round(c.min)}°</tspan></text></g>`}).join("");
+    <text x="${bl?x:r?x+20:x-20}" y="${(bl?y-12:y+4.5)+dy}" text-anchor="${bl?"middle":r?"start":"end"}">${c.n} <tspan class="t">${Math.round(c.min)}°</tspan></text></g>`}).join("");
   const rp=RANGE.map(([la,lo])=>P(lo,la)),rd="M"+rp.map(p=>p.map(v=>v.toFixed(1)).join(",")).join("L"),[rx,ry]=rp[0];
   $("map").innerHTML=`<defs><clipPath id="flclip"><path d="${FL}"/>${keys.map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="4" ry="2"/>`).join("")}</clipPath></defs>
     <rect x="-10" width="545" height="400" class="sea" rx="12"/>
