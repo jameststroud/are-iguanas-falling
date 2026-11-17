@@ -33,7 +33,7 @@
    LAYOUT: answer up top, scene + map side by side, thermometer, report band, then the science */
 :root{--sky1:#ffd27a;--sky2:#8fd3ef;--ground:#7cb342;--ig:#6fb53a;--ig2:#3d7a22;--belly:#c4df82}
 body.cold{--bg:light-dark(#e9f4fb,#0e1a24);--line:light-dark(#c9dfee,#23394a);--card:light-dark(#fff,#16273a);
-  --sky1:#c9e4f5;--sky2:#7fa9c9;--ground:#a9c3b0;--ig:#8fb3a8;--ig2:#4d6f6a;--belly:#d3e3de}
+  --sky1:#c9e4f5;--sky2:#7fa9c9;--ground:#a9c3b0;--ig:#86b8d8;--ig2:#3a6a8e;--belly:#e2f2fc}
 body.chilly{--sky1:#ffe9b8;--sky2:#a9cfe2;--ig:#7fae55;--ig2:#456f30;--belly:#cbdc9f}
 .top{padding-bottom:12px}
 .big{font-size:clamp(88px,17vw,210px);letter-spacing:-.02em;color:var(--leaf);margin:4px 0 2px}
@@ -83,14 +83,26 @@ body.cold .count .n{color:var(--ice)}
 .sci p{max-width:66ch;margin:0 0 14px}
 .paper .j{font-size:14px;color:var(--soft);margin:0 0 6px}
 .paper .ti{font-weight:700;font-size:18px;line-height:1.3;margin:0 0 8px}
-/* iguana motion */
-.ig{transform-box:fill-box;transform-origin:50% 50%}
+/* iguana motion
+   NO  (seq-no):  sunglasses spin in from the top right and land on the iguana's face.
+   YES (seq-yes): sunglasses fly off, camera zooms in, iguana turns icy blue and frosty,
+                  shivers with chattering teeth and breath puffs, camera zooms out, then it falls. */
+/* fixed pivot at the body's centre (local units), so flying sunglasses or text can't shift the flip */
+.ig{transform-box:view-box;transform-origin:-58px 4px}
+.shake{transform-box:fill-box;transform-origin:50% 50%}
 .tail{transform-box:fill-box;transform-origin:100% 30%;animation:sway 3.2s ease-in-out infinite}
 .head{transform-box:fill-box;transform-origin:0% 60%;animation:bob 4s ease-in-out infinite}
 .dew{transform-box:fill-box;transform-origin:50% 0%;animation:dew 4s ease-in-out infinite}
 .lid{opacity:0;transition:opacity .6s}
 .sun{transition:opacity 1s}.flake{opacity:0;transition:opacity 1s}
 .ig path,.ig ellipse{transition:fill 1.2s}
+#cam{transform-box:view-box;transform-origin:380px 180px}
+.shades,.spark,.mouth,.puff,.brrr{opacity:0}
+.sh,.spark,.puff,.brrr{transform-box:fill-box;transform-origin:50% 50%}
+.jaw{transform-box:fill-box}
+.frost{opacity:0;transition:opacity 1.6s .4s}
+.ice{transform-box:fill-box;transform-origin:50% 0;transform:scaleY(0);transition:transform 1.2s 1s}
+.brow{opacity:0;transition:opacity .6s .8s}
 @keyframes sway{0%,100%{transform:rotate(0)}50%{transform:rotate(-7deg)}}
 @keyframes bob{0%,60%,100%{transform:none}66%{transform:translateY(-7px)}72%{transform:none}78%{transform:translateY(-7px)}84%{transform:none}}
 @keyframes dew{0%,60%,100%{transform:scaleY(1)}66%,82%{transform:scaleY(1.45)}}
@@ -99,10 +111,36 @@ body.chilly .head,body.chilly .dew{animation:none}
 body.chilly .lid{opacity:.75}
 body.chilly .sun{opacity:.5}
 body.cold .tail,body.cold .head,body.cold .dew{animation:none}
-body.cold .lid{opacity:1}
 body.cold .sun{opacity:0}
 body.cold .flake{opacity:1;animation:snow 5s linear infinite}
-body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
+body.cold .frost,body.cold .brow{opacity:1}
+body.cold .ice{transform:none}
+/* NO: shades on */
+body.seq-no .shades{opacity:1}
+body.seq-no .sh{animation:shadesIn 1.3s cubic-bezier(.25,.7,.35,1) .2s both}
+body.seq-no .spark{animation:spark .7s ease-out 1.45s forwards}
+@keyframes shadesIn{0%{opacity:0;transform:translate(260px,-250px) rotate(-720deg) scale(2.2)}12%{opacity:1}72%{transform:translate(0,3px) rotate(10deg) scale(1)}86%{transform:translate(0,-4px) rotate(-5deg) scale(1)}100%{opacity:1;transform:none}}
+@keyframes spark{0%{opacity:0;transform:scale(0) rotate(0)}40%{opacity:1;transform:scale(1.3) rotate(45deg)}100%{opacity:0;transform:scale(.6) rotate(90deg)}}
+/* YES: shades off, zoom in, shiver, zoom out, fall */
+body.seq-yes.had-shades .shades{opacity:1}
+body.seq-yes .sh{animation:shadesOff .5s ease-in forwards}
+body.seq-yes #cam{animation:cam 5s ease-in-out .3s both}
+body.seq-yes .shake{animation:shiver .06s linear 1.2s 50 alternate}
+body.seq-yes .mouth{animation:mouth 3s 1.2s forwards}
+body.seq-yes .jaw{animation:chatter .08s linear 1.2s 36 alternate}
+body.seq-yes .puff{animation:puff 1.2s ease-out 1.3s 3}
+body.seq-yes .p2{animation-delay:1.7s}body.seq-yes .p3{animation-delay:2.1s}
+body.seq-yes .brrr{animation:brrr 3s 1.3s forwards}
+body.seq-yes .lid{animation:shut .4s 4.7s forwards}
+body.seq-yes .ig{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) 5.1s forwards}
+@keyframes shadesOff{0%{opacity:1;transform:none}100%{opacity:0;transform:translate(70px,-150px) rotate(240deg)}}
+@keyframes cam{0%{transform:none}20%,78%{transform:translate(-80px,60px) scale(2.3)}100%{transform:none}}
+@keyframes shiver{from{transform:translate(-1.8px,.4px) rotate(-.7deg)}to{transform:translate(1.8px,-.4px) rotate(.7deg)}}
+@keyframes mouth{0%,96%{opacity:1}100%{opacity:0}}
+@keyframes chatter{from{transform:none}to{transform:translateY(3px)}}
+@keyframes puff{0%{opacity:0;transform:translate(0,0) scale(.4)}25%{opacity:.95}100%{opacity:0;transform:translate(30px,-16px) scale(1.5)}}
+@keyframes brrr{0%{opacity:0;transform:scale(.3) rotate(-10deg)}12%{opacity:1;transform:scale(1.1) rotate(4deg)}20%,40%,60%,80%{transform:scale(1) rotate(-3deg)}30%,50%,70%{transform:scale(1.05) rotate(3deg)}90%{opacity:1}100%{opacity:0;transform:scale(1)}}
+@keyframes shut{from{opacity:0}to{opacity:1}}
 @keyframes fall{0%{transform:none}10%{transform:rotate(-5deg)}20%{transform:rotate(6deg)}28%{transform:translate(0,8px) rotate(25deg)}68%{transform:translate(-14px,240px) rotate(180deg)}74%{transform:translate(-14px,218px) rotate(176deg)}80%,100%{transform:translate(-14px,229px) rotate(180deg)}}
 @keyframes snow{from{transform:translateY(-20px)}to{transform:translateY(60px)}}
 .sharerow{margin-top:18px}
@@ -118,7 +156,10 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
 @media(max-width:820px){.stage,.sci,.report{grid-template-columns:minmax(0,1fr)}}
 @media(max-width:600px){.ctrl{grid-template-columns:minmax(0,1fr) auto}.ctrl label{grid-column:1/-1}}
 @media(prefers-reduced-motion:reduce){.tail,.head,.dew,body.cold .flake{animation:none!important}
-  body.cold .ig.drop{animation:none;transform:translate(-14px,229px) rotate(180deg)}}
+  body.seq-no .sh,body.seq-no .spark,body.seq-yes #cam,body.seq-yes .shake,body.seq-yes .jaw,body.seq-yes .puff,body.seq-yes .brrr,body.seq-yes .mouth,body.seq-yes .sh{animation:none}
+  body.seq-yes .shades{opacity:0!important}
+  body.seq-yes .lid{animation:none;opacity:1}
+  body.seq-yes .ig{animation:none;transform:translate(-14px,229px) rotate(180deg)}}
 </style>
 </head>
 <body>
@@ -163,10 +204,10 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
           <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sky2)"/><stop offset="1" style="stop-color:var(--sky1)"/></linearGradient>
           <radialGradient id="crown" cx=".4" cy=".35" r=".7"><stop offset="0" stop-color="#4f9a3a"/><stop offset="1" stop-color="#25602a"/></radialGradient>
         </defs>
-        <rect width="600" height="480" fill="url(#sky)"/>
+        <g id="cam">
+        <rect x="-300" y="-300" width="1200" height="1080" fill="url(#sky)"/>
         <g class="sun"><circle cx="505" cy="78" r="44" fill="#ffd54a"/><circle cx="505" cy="78" r="62" fill="#ffd54a" opacity=".25"/></g>
-        <g class="flake" fill="#fff" id="flakes"></g>
-        <rect y="432" width="600" height="48" fill="var(--ground)"/>
+        <rect x="-300" y="432" width="1200" height="348" fill="var(--ground)"/>
         <ellipse cx="300" cy="434" rx="320" ry="10" fill="#000" opacity=".08"/>
         <path d="M78,440 C92,360 96,260 108,150 L142,150 C140,260 136,360 150,440 Z" fill="#7a5532"/>
         <path d="M126,150 L142,150 C140,260 136,360 150,440 L134,440 C124,360 128,260 126,150Z" fill="#000" opacity=".12"/>
@@ -175,7 +216,7 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
         <g fill="url(#crown)"><circle cx="70" cy="110" r="60"/><circle cx="140" cy="70" r="66"/><circle cx="200" cy="120" r="52"/><circle cx="118" cy="140" r="50"/><circle cx="20" cy="60" r="50"/></g>
         <g fill="#3e8a35"><ellipse cx="530" cy="200" rx="22" ry="9" transform="rotate(-25 530 200)"/><ellipse cx="548" cy="214" rx="20" ry="8" transform="rotate(20 548 214)"/></g>
         <g transform="translate(318,180)">
-          <g class="ig" id="ig">
+          <g class="ig" id="ig"><g class="shake">
             <g class="tail">
               <path d="M-50,-12 C-110,-12 -170,-4 -235,22 C-240,26 -236,30 -230,28 C-170,10 -110,12 -50,14 Z" fill="var(--ig)"/>
               <g stroke="var(--ig2)" stroke-width="5" stroke-linecap="round"><path d="M-82,-11 L-84,13"/><path d="M-112,-8 L-114,12"/><path d="M-142,-4 L-144,12"/><path d="M-172,3 L-174,14"/><path d="M-200,11 L-201,19"/></g>
@@ -185,6 +226,9 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
             <ellipse cx="0" cy="0" rx="66" ry="21" fill="var(--ig)"/>
             <ellipse cx="2" cy="10" rx="56" ry="9" fill="var(--belly)"/>
             <path id="crest" fill="var(--ig2)"/>
+            <g class="frost"><path id="crestFrost" fill="#fff" opacity=".85"/><path d="M-56,-10 C-30,-22 30,-24 60,-12" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-dasharray="6 5" fill="none"/><path d="M-60,-8 C-120,-10 -170,-2 -220,18" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 6" fill="none"/></g>
+            <g class="ice" fill="#eef9ff" stroke="#8fbfdc" stroke-width=".8"><path d="M-28,19 L-25,31 L-22,19Z"/><path d="M-6,21 L-2,35 L2,21Z"/><path d="M20,20 L23,30 L26,20Z"/><path d="M47,15 L50,24 L53,14Z"/><path d="M-118,9 L-115,19 L-112,8Z"/><path d="M-170,9 L-167,17 L-164,8Z"/></g>
+            <text class="brrr" x="78" y="-46" font-family="'Archivo Black',Archivo,sans-serif" font-size="17" fill="#fff" stroke="#3a6a8e" stroke-width="3.5" paint-order="stroke" stroke-linejoin="round">BRRR!</text>
             <g class="head">
               <path class="dew" d="M64,10 C70,32 88,36 98,12 Z" fill="var(--belly)" stroke="var(--ig2)" stroke-width="1.5"/>
               <path d="M50,-15 C76,-26 102,-22 114,-9 C121,-2 118,7 108,9 C90,12 70,14 50,14 Z" fill="var(--ig)"/>
@@ -192,9 +236,30 @@ body.cold .ig.drop{animation:fall 2.6s cubic-bezier(.45,0,.85,.5) forwards}
               <circle cx="93" cy="-10" r="4.5" fill="#2b1a0e"/><circle cx="94.5" cy="-11.5" r="1.4" fill="#fff"/>
               <path class="lid" d="M88,-12 C90,-16 97,-16 99,-12 C97,-8 90,-8 88,-12Z" fill="var(--ig2)"/>
               <path d="M112,-4 L117,-3" stroke="var(--ig2)" stroke-width="2" stroke-linecap="round"/>
+              <path class="brow" d="M86,-18 Q92,-23 100,-19" stroke="var(--ig2)" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+              <g class="frost"><path d="M58,-17 C80,-25 100,-22 110,-12" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-dasharray="5 4" fill="none"/></g>
+              <g class="ice" fill="#eef9ff" stroke="#8fbfdc" stroke-width=".8"><path d="M101,9 L104,19 L107,8Z"/></g>
+              <g class="mouth">
+                <path d="M98,4 L117,2 L117,9 L99,10 Z" fill="#5a1620"/>
+                <path d="M99,4 L117,2 L117,3 L115.5,6 L114,2.6 L112,6.2 L110,2.9 L108,6.4 L106,3.2 L104,6.6 L102,3.5 L100.5,6.6 Z" fill="#fff"/>
+                <g class="jaw"><path d="M99,10 L117,8.5 C116,12 110,13 100,13 Z" fill="var(--ig)"/>
+                  <path d="M100,10 L101.5,6.8 L103,9.8 L105,6.6 L107,9.6 L109,6.4 L111,9.3 L113,6.2 L115,9 L116.5,6 L117,8.6 Z" fill="#fff"/></g>
+              </g>
+              <g fill="#fff"><circle class="puff p1" cx="125" cy="-4" r="5"/><circle class="puff p2" cx="125" cy="-4" r="4"/><circle class="puff p3" cx="125" cy="-4" r="5"/></g>
+              <g class="shades"><g class="sh">
+                <path d="M64,-13 L81,-17" stroke="#111" stroke-width="3" stroke-linecap="round"/>
+                <rect x="79" y="-20" width="41" height="4" rx="2" fill="#111"/>
+                <path d="M80,-17 H103 V-12 C103,-6 99,-3 93,-3 C86,-3 80,-7 80,-12 Z" fill="#141414"/>
+                <path d="M106,-17 H119 V-13 C119,-8 117,-5 113,-5 C109,-5 106,-8 106,-13 Z" fill="#141414"/>
+                <path d="M102,-15 Q104.5,-17 107,-15" stroke="#111" stroke-width="2.5" fill="none"/>
+                <path d="M85,-15 L90,-15 L85,-6 L82,-6 Z" fill="#fff" opacity=".35"/><path d="M109,-15 L112,-15 L109,-9 L107,-9 Z" fill="#fff" opacity=".35"/>
+              </g></g>
+              <path class="spark" d="M124,-28 L126,-23 L131,-21 L126,-19 L124,-14 L122,-19 L117,-21 L122,-23 Z" fill="#fff" stroke="#ffd54a" stroke-width="1"/>
             </g>
-          </g>
+          </g></g>
         </g>
+        </g>
+        <g class="flake" fill="#fff" id="flakes"></g>
       </svg>
     </div>
     <div class="panel">
@@ -296,16 +361,23 @@ const level=t=>t<=FALL?"cold":t<=CHILLY?"chilly":"warm";
 const col={cold:"#3d8fd1",chilly:"#e0a325",warm:"#ff7a2f"};
 
 let d="";for(let x=-48;x<=60;x+=9){const y=-21*Math.sqrt(Math.max(0,1-(x/66)**2));const h=6+10*(1-Math.abs(x-20)/80);d+=`M${x-4},${y+2}L${x},${y-h}L${x+4},${y+2}Z`;}
-$("crest").setAttribute("d",d);
+$("crest").setAttribute("d",d);$("crestFrost").setAttribute("d",d);
 $("flakes").innerHTML=Array.from({length:26},(_,i)=>`<circle cx="${(i*83)%590+5}" cy="${(i*47)%380+10}" r="${2+i%3}"/>`).join("");
 
-let live=null,liveNote="map_plain",liveDate="",lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
-function setScene(t,replay){
+let lastAns=null,live=null,liveNote="map_plain",liveDate="",lastLevel=null,sceneT=70,falls=null,fallPts=null,fallHidden=0;
+/* Restart a CSS sequence: "no" = sunglasses land, "yes" = zoom, shiver, fall */
+function runSeq(kind){
+  const b=document.body,had=b.classList.contains("seq-no");
+  b.classList.remove("seq-yes","seq-no","had-shades");void b.offsetWidth;
+  if(kind==="yes"&&had)b.classList.add("had-shades");
+  b.classList.add("seq-"+kind);
+}
+function setScene(t,replay,quiet){
   sceneT=t;
   const L=level(t);document.body.classList.remove("cold","chilly","warm");document.body.classList.add(L);
-  const ig=$("ig");
-  if(L==="cold"&&(lastLevel!=="cold"||replay)){ig.classList.remove("drop");void ig.getBoundingClientRect();ig.classList.add("drop");}
-  if(L!=="cold")ig.classList.remove("drop");
+  if(!quiet){const ans=L==="cold"?"yes":"no";
+    if(ans!==lastAns||(replay&&ans==="yes"))runSeq(ans);
+    lastAns=ans;}
   lastLevel=L;
   $("tv").textContent=t+"°F";$("t").value=t;
   $("st").textContent=window.t("st_"+L);
@@ -384,7 +456,7 @@ async function load(){
    Always shares the real forecast (live), never the what-if slider value. */
 const SITE="https://jameststroud.github.io/are-iguanas-falling/";
 const PAL={warm:{"--sky1":"#ffd27a","--sky2":"#8fd3ef","--ground":"#7cb342","--ig":"#6fb53a","--ig2":"#3d7a22","--belly":"#c4df82"},
-           cold:{"--sky1":"#c9e4f5","--sky2":"#7fa9c9","--ground":"#a9c3b0","--ig":"#8fb3a8","--ig2":"#4d6f6a","--belly":"#d3e3de"}};
+           cold:{"--sky1":"#c9e4f5","--sky2":"#7fa9c9","--ground":"#a9c3b0","--ig":"#86b8d8","--ig2":"#3a6a8e","--belly":"#e2f2fc"}};
 function realAnswer(){
   if(!live||liveNote==="map_sample")return null;
   const c=live.reduce((a,b)=>b.min<a.min?b:a);const t=Math.round(c.min);
@@ -393,12 +465,15 @@ function realAnswer(){
 /* The page's own cartoon scene, frozen in the YES (fallen) or NO (on the branch) pose */
 function sceneImage(yes){
   const svg=document.querySelector(".scene").cloneNode(true);
-  const bb=$("ig").getBBox(),cx=bb.x+bb.width/2,cy=bb.y+bb.height/2;
+  const cx=-58,cy=4; /* same fixed pivot as the CSS fall */
   const ig=svg.querySelector("#ig");ig.removeAttribute("class");
   ig.setAttribute("transform",yes?`translate(-14,229) rotate(180 ${cx} ${cy})`:"");
   svg.querySelector(".lid").setAttribute("opacity",yes?1:0);
   svg.querySelector(".flake").setAttribute("opacity",yes?1:0);
   svg.querySelector(".sun").setAttribute("opacity",yes?0:1);
+  svg.querySelector("#cam").removeAttribute("id");
+  const vis=(sel,on)=>svg.querySelectorAll(sel).forEach(e=>e.setAttribute("opacity",on?1:0));
+  vis(".shades",!yes);vis(".frost,.brow,.ice",yes);vis(".mouth,.puff,.brrr,.spark",false);
   svg.setAttribute("width",600);svg.setAttribute("height",480);
   let x=new XMLSerializer().serializeToString(svg);
   const pal=PAL[yes?"cold":"warm"];
@@ -475,7 +550,7 @@ $("live").addEventListener("click",()=>{if(live)show(live);});
 window.onLangChange(words);
 window.applyI18n();
 $("why").textContent=window.t("checking");
-drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70);loadFalls().then(load);
+drawMap(CITIES.map((c,i)=>({...c,min:SAMPLE[i]})));setScene(70,false,true);loadFalls().then(load);
 }
 </script>
 </body>
