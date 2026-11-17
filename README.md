@@ -30,6 +30,10 @@ From the Stroud Lab at Georgia Tech.
 
 `status.json` and `falls.json` are written by the workflow; you never need to make them.
 
+## After editing a shared file
+
+Every page loads `assets/site.css`, `assets/i18n.js` and `assets/analytics.js` with a version number, e.g. `assets/i18n.js?v=20261117a`. Browsers keep these files for about 10 minutes, so after you change one of them, bump the version in all four pages (`index.html`, `who.html`, `press.html`, `classroom.html`); a search-and-replace of the old `?v=` value is enough. Otherwise visitors can briefly see a new page with an old text file, which shows raw labels like `map_how`.
+
 ## Settings you might change
 
 - Thresholds: top of the script in `index.html`. `FALL = 44` means a low of 44°F or below shows YES; `CHILLY = 60`: from 45°F to 60°F the iguana is chilly and sluggish with no sunglasses; above 60°F it basks in sunglasses.
@@ -61,7 +65,9 @@ The Florida map on the home page is coloured by the forecast overnight low. Each
 - the **approximate northern range limit of green iguanas** as a dashed line (`RANGE` in `index.html`), traced from iNaturalist observations;
 - the 8 cities with their lows, and the date in the top-right corner.
 
-If the grid fetch fails, the page colours the map from the 8 cities instead. Colours are set in `COLD_STOPS` and `WARM_STOPS` in `index.html`.
+If the grid fetch fails, the page colours the map from the 8 cities instead.
+
+**Picking a city.** Visitors can click a city on the map (or choose it from the "Pick a city" list under the map). The heading, YES/NO, explanation, cartoon iguana and the share image then follow that city's forecast; clicking it again, or choosing "All of Florida", goes back to the coldest city. The scale bar's captions (Basking, Sluggish, Iguana falling zone, Timber!) are the `zone_` keys in `assets/i18n.js`. Colours are set in `COLD_STOPS` and `WARM_STOPS` in `index.html`.
 
 ## Map of reported falls
 

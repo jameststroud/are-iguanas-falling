@@ -273,7 +273,21 @@ window.I18N = {
     map_how: "Colors show the forecast overnight low, interpolated between {n} forecast points. Blue means 44°F or below.",
     map_how_cities: "Colors show the forecast overnight low, interpolated between the 8 cities. Blue means 44°F or below.",
     scale_aria: "Color scale for the overnight low: blue at 44°F and below, then pale cream at 45°F warming to deep orange at 80°F",
-    scale_unit: "°F"
+    scale_unit: "°F",
+
+    /* Pick a city on the map, and the fun scale (home page) */
+    q_city: "Are iguanas falling out of the trees in {c}?",
+    city_pick: "Pick a city:",
+    city_all: "All of Florida",
+    city_hint: "Tap a city on the map, or pick one from the list, to see its forecast.",
+    city_btn: "Show the forecast for {c}",
+    share_temp_city: "Forecast low: {t}°F in {c}",
+    share_line_no_city: "No iguanas falling in {c} tonight",
+    share_text_no_city: "No iguanas falling in {c} tonight 🦎☀️ Forecast low: {t}°F. {u}",
+    zone_bask: "Basking",
+    zone_slug: "Sluggish",
+    zone_fall: "Iguana falling zone",
+    zone_timber: "Timber!"
   },
 
   es: {
@@ -546,7 +560,21 @@ window.I18N = {
     map_how: "Los colores muestran la mínima nocturna pronosticada, interpolada entre {n} puntos de pronóstico. Azul significa 44°F o menos.",
     map_how_cities: "Los colores muestran la mínima nocturna pronosticada, interpolada entre las 8 ciudades. Azul significa 44°F o menos.",
     scale_aria: "Escala de color de la mínima nocturna: azul a 44°F o menos, luego crema pálido a 45°F que se calienta hasta naranja intenso a 80°F",
-    scale_unit: "°F"
+    scale_unit: "°F",
+
+    /* Pick a city on the map, and the fun scale (home page) */
+    q_city: "¿Se están cayendo las iguanas de los árboles en {c}?",
+    city_pick: "Elige una ciudad:",
+    city_all: "Toda Florida",
+    city_hint: "Toca una ciudad en el mapa, o elígela de la lista, para ver su pronóstico.",
+    city_btn: "Mostrar el pronóstico para {c}",
+    share_temp_city: "Mínima pronosticada: {t}°F en {c}",
+    share_line_no_city: "Esta noche no caen iguanas en {c}",
+    share_text_no_city: "Esta noche no caen iguanas en {c} 🦎☀️ Mínima pronosticada: {t}°F. {u}",
+    zone_bask: "Tomando el sol",
+    zone_slug: "Lentas",
+    zone_fall: "Zona de iguanas cayendo",
+    zone_timber: "¡Allá van!"
   }
 };
 
