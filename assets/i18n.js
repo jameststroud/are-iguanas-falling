@@ -236,7 +236,7 @@ window.I18N = {
     tg_safety: "<b>Safety:</b> remind students never to touch or pick up a cold-stunned iguana. It will warm up and move again, and it can bite and scratch.",
 
     /* Map of reported falls (home page) */
-    legend_low: "Forecast low",
+    legend_low: "City forecast low (the iguana shows how it's doing)",
     legend_fall: "Reported fall",
     fall_pin: "Reported fall, {d}",
     fall_pop_h: "Reported fall",
@@ -538,7 +538,7 @@ window.I18N = {
     tg_safety: "<b>Seguridad:</b> recuerda a los estudiantes que nunca toquen ni levanten una iguana paralizada por el frío. Se va a calentar y volverá a moverse, y puede morder y arañar.",
 
     /* Map of reported falls (home page) */
-    legend_low: "Mínima pronosticada",
+    legend_low: "Mínima pronosticada por ciudad (la iguana muestra cómo está)",
     legend_fall: "Caída reportada",
     fall_pin: "Caída reportada, {d}",
     fall_pop_h: "Caída reportada",
